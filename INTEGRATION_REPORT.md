@@ -114,3 +114,4 @@ tail -f /home/darksaiders/booking-aggregator/server.log
 **Разработчик:** AI Assistant  
 **Версия:** 1.0.0  
 **Статус:** ✅ ЗАВЕРШЕНО
+

@@ -4,6 +4,7 @@ import bookingRoutes from './routes/booking';
 import orderRoutes from './routes/orders';
 import syncRoutes from './routes/sync';
 import raceRoutes from './routes/races';
+import stationRoutes from './routes/stations';
 import { adminRoutes } from './routes/admin';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -32,6 +33,7 @@ app.use('/api', bookingRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/races', raceRoutes);
+app.use('/api/stations', stationRoutes);
 app.use('/admin', adminRoutes);
 
 // Тестовый маршрут
@@ -39,13 +41,23 @@ app.get('/', (req, res) => {
   res.json({
     message: '🚌 Booking Aggregator API v1.0',
     description: 'Агрегатор API для систем бронирования автобусных билетов',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    config: {
+      gdsApi1: {
+        url: process.env.GDS_API1_URL || 'https://cluster.avtovokzal.ru/gdstest/soap/json',
+        username: process.env.GDS_API1_USERNAME || 'sakhbus',
+        password: process.env.GDS_API1_PASSWORD ? '***' : 'не указан'
+      }
+    },
     endpoints: {
       api: '/api/*',
       races: '/api/races/*',
       orders: '/api/orders/*',
       sync: '/api/sync/*',
       admin: '/admin/*',
-      docs: 'https://github.com/your-repo/docs'
+      test: '/api/test/connections',
+      stats: '/api/stats'
     }
   });
 });

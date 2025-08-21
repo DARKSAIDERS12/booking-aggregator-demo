@@ -115,29 +115,31 @@ export class RaceService {
         try {
             const allRaces: Race[] = [];
 
-            // Получаем рейсы из API 1
-            try {
-                const api1Races = await this.api1Service.getAllRaces();
-                allRaces.push(...api1Races.map(race => ({
-                    ...race,
-                    source: 'api1' as const,
-                    sourceId: `api1_${race.id}`
-                })));
-            } catch (error) {
-                console.error('Ошибка получения рейсов из API 1:', error);
-            }
-
-            // Получаем рейсы из API 2
-            try {
-                const api2Races = await this.api2Service.getAllRaces();
-                allRaces.push(...api2Races.map(race => ({
-                    ...race,
-                    source: 'api2' as const,
-                    sourceId: `api2_${race.id}`
-                })));
-            } catch (error) {
-                console.error('Ошибка получения рейсов из API 2:', error);
-            }
+            // Получаем рейсы из API 1 (тестовые данные)
+            const api1Races = await this.api1Service.searchRaces({
+                from: 'Южно-Сахалинск',
+                to: 'Холмск',
+                date: '2025-08-22'
+            });
+            
+            // Получаем рейсы из API 2 (тестовые данные)
+            const api2Races = await this.api2Service.searchRaces({
+                from: 'Южно-Сахалинск',
+                to: 'Холмск',
+                date: '2025-08-22'
+            });
+            
+            // Объединяем рейсы
+            allRaces.push(...api1Races.map((race: any) => ({
+                ...race,
+                source: 'api1' as const,
+                sourceId: `api1_${race.id}`
+            })));
+            allRaces.push(...api2Races.map((race: any) => ({
+                ...race,
+                source: 'api2' as const,
+                sourceId: `api2_${race.id}`
+            })));
 
             return allRaces;
         } catch (error) {

@@ -90,7 +90,55 @@ export class Api2Service {
   async getStations(): Promise<any[]> {
     try {
       console.log('Получение станций из API 2');
-      return [];
+      
+      // Тестовые данные для Paybilet API
+      return [
+        {
+          id: 'pb_1',
+          name: 'Южно-Сахалинск',
+          code: 'YSS',
+          city: 'Южно-Сахалинск',
+          region: 'Сахалинская область',
+          country: 'Россия',
+          coordinates: { lat: 46.9641, lng: 142.7380 }
+        },
+        {
+          id: 'pb_2',
+          name: 'Холмск',
+          code: 'KHM',
+          city: 'Холмск',
+          region: 'Сахалинская область',
+          country: 'Россия',
+          coordinates: { lat: 47.0406, lng: 142.0416 }
+        },
+        {
+          id: 'pb_3',
+          name: 'Корсаков',
+          code: 'KRS',
+          city: 'Корсаков',
+          region: 'Сахалинская область',
+          country: 'Россия',
+          coordinates: { lat: 46.6333, lng: 142.7667 }
+        },
+        {
+          id: 'pb_4',
+          name: 'Невельск',
+          code: 'NVL',
+          city: 'Невельск',
+          region: 'Сахалинская область',
+          country: 'Россия',
+          coordinates: { lat: 46.6833, lng: 141.8667 }
+        },
+        {
+          id: 'pb_5',
+          name: 'Долинск',
+          code: 'DLS',
+          city: 'Долинск',
+          region: 'Сахалинская область',
+          country: 'Россия',
+          coordinates: { lat: 47.3333, lng: 142.8000 }
+        }
+      ];
     } catch (error) {
       console.error('Ошибка получения станций из API 2:', error);
       return [];
@@ -101,7 +149,10 @@ export class Api2Service {
   async getStationsFrom(fromStationId: string): Promise<any[]> {
     try {
       console.log('Получение станций назначения из API 2 для станции:', fromStationId);
-      return [];
+      
+      // Тестовые данные - возвращаем все станции кроме отправления
+      const allStations = await this.getStations();
+      return allStations.filter(station => station.id !== fromStationId);
     } catch (error) {
       console.error('Ошибка получения станций назначения из API 2:', error);
       return [];

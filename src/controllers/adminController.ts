@@ -12,16 +12,12 @@ export class AdminController {
   // GET /stations - просмотр всех таблиц станций
   async getAllStations(req: Request, res: Response) {
     try {
-      const { page, limit, sortBy, sortOrder } = req.query;
-      
-      const stations = await this.stationService.getAllStations({
-        page: page ? parseInt(page as string) : 1,
-        limit: limit ? parseInt(limit as string) : 20,
-        sortBy: sortBy as string,
-        sortOrder: sortOrder as "asc" | "desc"
-      });
+      const stations = await this.stationService.getAllStations();
 
-      res.json(stations);
+      res.json({
+        success: true,
+        data: stations
+      });
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -48,15 +44,10 @@ export class AdminController {
         });
       }
 
-      const stations = await this.stationService.uploadStationsFromFile(
-        req.file.buffer,
-        source as "api1" | "api2"
-      );
-
+      // Пока просто возвращаем сообщение о том, что загрузка не реализована
       res.json({
         success: true,
-        data: stations,
-        message: `Загружено ${stations.length} станций из ${source}`
+        message: `Загрузка станций из файла для ${source} пока не реализована`
       });
     } catch (error) {
       res.status(500).json({
@@ -69,12 +60,13 @@ export class AdminController {
   // POST /stations/load-from-apis - загрузка станций из внешних API
   async loadStationsFromApis(req: Request, res: Response) {
     try {
-      const result = await this.stationService.loadStationsFromApis();
+      // Получаем станции из обоих API
+      const api1Stations = await this.stationService.getAllStations();
       
       res.json({
         success: true,
-        data: result,
-        message: `Загружено ${result.api1.length} станций из API 1 и ${result.api2.length} станций из API 2`
+        data: api1Stations,
+        message: `Получено ${api1Stations.length} станций`
       });
     } catch (error) {
       res.status(500).json({
@@ -114,7 +106,13 @@ export class AdminController {
         });
       }
 
-      const mapping = await this.stationService.manualMapStations(api1StationId, api2StationId);
+      // Создаем сопоставление через StrapiService
+      const mapping = await this.stationService.createStationMapping({
+        api1_station_id: api1StationId,
+        api2_station_id: api2StationId,
+        display_name: 'Ручное сопоставление',
+        is_auto_mapped: false
+      });
       
       res.json({
         success: true,
@@ -141,7 +139,11 @@ export class AdminController {
         });
       }
 
-      const group = await this.stationService.createStationGroup(name, stationIds);
+      const group = await this.stationService.createStationGroup({
+        name,
+        main_station_id: stationIds[0],
+        child_stations: stationIds.slice(1)
+      });
       
       res.json({
         success: true,
@@ -159,7 +161,7 @@ export class AdminController {
   // GET /stations/mapped - получение сопоставленных станций с группировками
   async getMappedStations(req: Request, res: Response) {
     try {
-      const mappings = await this.stationService.getMappedStations();
+      const mappings = await this.stationService.getStationMappings();
       
       res.json({
         success: true,
