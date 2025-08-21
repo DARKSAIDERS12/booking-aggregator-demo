@@ -1,162 +1,249 @@
-import { Api1Service } from './api1Service';
 import StrapiService from './strapiService';
-import { StrapiStation, StrapiRoute } from './strapiService';
-import { Station } from '../types';
+import { Api1Service } from './api1Service';
+import { Api2Service } from './api2Service';
 
 export class SyncService {
-  private api1Service: Api1Service;
-  private strapiService: StrapiService;
+  private strapi: StrapiService;
+  private api1: Api1Service;
+  private api2: Api2Service;
 
   constructor() {
-    this.api1Service = new Api1Service();
-    this.strapiService = new StrapiService();
+    this.strapi = new StrapiService();
+    this.api1 = new Api1Service();
+    this.api2 = new Api2Service();
   }
 
-  // Синхронизация станций из GDS API в Strapi
-  async syncStations(): Promise<{ success: boolean; message: string; count: number }> {
+  /**
+   * Синхронизация станций из API 1 (GDS)
+   */
+  async syncApi1Stations(): Promise<void> {
     try {
-      console.log('🔄 Начинаю синхронизацию станций...');
+      console.log('🚀 Начинаем синхронизацию станций из API 1 (GDS)...');
       
-      // Получаем станции из GDS API
-      const gdsStations = await this.api1Service.getStations();
-      if (!gdsStations || gdsStations.length === 0) {
-        return {
-          success: false,
-          message: 'Не удалось получить станции из GDS API',
-          count: 0
-        };
-      }
+      // Получаем станции из API 1
+      const stations = await this.api1.getStations();
+      console.log(`📊 Получено ${stations.length} станций из API 1`);
 
-      // TODO: Реализовать получение станций из Strapi
-      const existingStrapiStations: StrapiStation[] = [];
-      const existingStationIds = new Set<string>();
+      // Получаем существующие станции из Strapi
+      const existingStations = await this.strapi.getApi1Stations();
+      console.log(`📊 Найдено ${existingStations.length} существующих станций в Strapi`);
 
-      let createdCount = 0;
-      let updatedCount = 0;
+      let created = 0;
+      let updated = 0;
 
-      // Обрабатываем каждую станцию
-      for (const gdsStation of gdsStations) {
-        const stationData: Partial<StrapiStation> = {
-          station_id: gdsStation.id || '',
-          name: gdsStation.name || '',
-          country: gdsStation.country || 'Россия',
-          region: gdsStation.region || '',
-          latitude: gdsStation.latitude || 0,
-          longitude: gdsStation.longitude || 0,
-          api_source: 'gds',
-          is_active: true
-        };
+      for (const station of stations) {
+        try {
+          // Проверяем, существует ли станция
+          const existingStation = existingStations.find(s => 
+            s.attributes?.station_id === station.id.toString()
+          );
 
-        if (existingStationIds.has(stationData.station_id!)) {
-          // TODO: Реализовать обновление станций
-          console.log(`⚠️ Станция ${stationData.station_id} уже существует, обновление временно отключено`);
-          updatedCount++;
-        } else {
-          // TODO: Реализовать создание станций
-          console.log(`⚠️ Создание станции ${stationData.station_id} временно отключено`);
-          createdCount++;
+          if (existingStation) {
+            // Обновляем существующую станцию
+            await this.strapi.updateApi1Station(existingStation.id, {
+              name: station.name,
+              code: station.code,
+              region: station.region,
+              country: station.country,
+              coordinates: station.latitude && station.longitude ? {
+                lat: station.latitude,
+                lng: station.longitude
+              } : null,
+              last_sync: new Date().toISOString()
+            });
+            updated++;
+          } else {
+            // Создаем новую станцию
+            await this.strapi.createApi1Station({
+              station_id: station.id.toString(),
+              name: station.name,
+              code: station.code,
+              region: station.region,
+              country: station.country,
+              coordinates: station.latitude && station.longitude ? {
+                lat: station.latitude,
+                lng: station.longitude
+              } : null,
+              is_active: true,
+              last_sync: new Date().toISOString()
+            });
+            created++;
+          }
+        } catch (error) {
+          console.error(`❌ Ошибка обработки станции ${station.name}:`, error);
         }
       }
 
-      const message = `Синхронизация станций завершена. Создано: ${createdCount}, обновлено: ${updatedCount}`;
-      console.log(`✅ ${message}`);
-      
-      return {
-        success: true,
-        message,
-        count: createdCount + updatedCount
-      };
-
+      console.log(`✅ Синхронизация API 1 завершена. Создано: ${created}, обновлено: ${updated}`);
     } catch (error) {
-      console.error('❌ Ошибка синхронизации станций:', error);
-      return {
-        success: false,
-        message: `Ошибка синхронизации: ${error}`,
-        count: 0
-      };
+      console.error('❌ Ошибка синхронизации API 1 станций:', error);
+      throw error;
     }
   }
 
-  // Синхронизация маршрутов из GDS API в Strapi
-  async syncRoutes(): Promise<{ success: boolean; message: string; count: number }> {
+  /**
+   * Синхронизация станций из API 2 (Paybilet)
+   */
+  async syncApi2Stations(): Promise<void> {
     try {
-      console.log('🔄 Начинаю синхронизацию маршрутов...');
+      console.log('🚀 Начинаем синхронизацию станций из API 2 (Paybilet)...');
       
-      // TODO: Реализовать получение маршрутов из GDS API
-      // Пока возвращаем заглушку
-      console.log('⚠️ Синхронизация маршрутов временно отключена - метод getRoutes не реализован');
-      
-      return {
-        success: true,
-        message: 'Синхронизация маршрутов временно отключена',
-        count: 0
-      };
+      // Получаем станции из API 2
+      const stations = await this.api2.getStations();
+      console.log(`📊 Получено ${stations.length} станций из API 2`);
 
-    } catch (error) {
-      console.error('❌ Ошибка синхронизации маршрутов:', error);
-      return {
-        success: false,
-        message: `Ошибка синхронизации: ${error}`,
-        count: 0
-      };
-    }
-  }
+      // Получаем существующие станции из Strapi
+      const existingStations = await this.strapi.getApi2Stations();
+      console.log(`📊 Найдено ${existingStations.length} существующих станций в Strapi`);
 
-  // Полная синхронизация
-  async fullSync(): Promise<{ success: boolean; message: string; details: any }> {
-    try {
-      console.log('🔄 Начинаю полную синхронизацию...');
-      
-      const stationsResult = await this.syncStations();
-      const routesResult = await this.syncRoutes();
+      let created = 0;
+      let updated = 0;
 
-      const success = stationsResult.success && routesResult.success;
-      const message = `Полная синхронизация завершена. Станции: ${stationsResult.message}, Маршруты: ${routesResult.message}`;
+      for (const station of stations) {
+        try {
+          // Проверяем, существует ли станция
+          const existingStation = existingStations.find(s => 
+            s.attributes?.station_id === station.id.toString()
+          );
 
-      return {
-        success,
-        message,
-        details: {
-          stations: stationsResult,
-          routes: routesResult
+          if (existingStation) {
+            // Обновляем существующую станцию
+            await this.strapi.updateApi2Station(existingStation.id, {
+              name: station.name,
+              code: station.code,
+              region: station.region,
+              country: station.country,
+              latitude: station.latitude,
+              longitude: station.longitude,
+              last_sync: new Date().toISOString()
+            });
+            updated++;
+          } else {
+            // Создаем новую станцию
+            await this.strapi.createApi2Station({
+              station_id: station.id.toString(),
+              name: station.name,
+              code: station.code,
+              region: station.region,
+              country: station.country,
+              latitude: station.latitude,
+              longitude: station.longitude,
+              is_active: true,
+              last_sync: new Date().toISOString()
+            });
+            created++;
+          }
+        } catch (error) {
+          console.error(`❌ Ошибка обработки станции ${station.name}:`, error);
         }
-      };
+      }
 
+      console.log(`✅ Синхронизация API 2 завершена. Создано: ${created}, обновлено: ${updated}`);
+    } catch (error) {
+      console.error('❌ Ошибка синхронизации API 2 станций:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Автоматическое сопоставление станций
+   */
+  async autoMapStations(): Promise<void> {
+    try {
+      console.log('🚀 Начинаем автоматическое сопоставление станций...');
+      
+      // Получаем все станции
+      const api1Stations = await this.strapi.getApi1Stations();
+      const api2Stations = await this.strapi.getApi2Stations();
+      
+      console.log(`📊 API 1 станций: ${api1Stations.length}, API 2 станций: ${api2Stations.length}`);
+
+      // Получаем существующие сопоставления
+      const existingMappings = await this.strapi.getStationMappings();
+      console.log(`📊 Найдено ${existingMappings.length} существующих сопоставлений`);
+
+      let created = 0;
+
+      for (const api1Station of api1Stations) {
+        const api1Name = api1Station.attributes?.name || api1Station.name;
+        if (!api1Name) continue;
+
+        // Ищем похожие станции в API 2
+        for (const api2Station of api2Stations) {
+          const api2Name = api2Station.attributes?.name || api2Station.name;
+          if (!api2Name) continue;
+
+          // Простое сравнение по названию
+          if (this.normalizeStationName(api1Name) === this.normalizeStationName(api2Name)) {
+            // Проверяем, не существует ли уже сопоставление
+            const existingMapping = existingMappings.find(m => 
+              m.attributes?.api1_station?.id === api1Station.id &&
+              m.attributes?.api2_station?.id === api2Station.id
+            );
+
+            if (!existingMapping) {
+              try {
+                // Создаем сопоставление
+                await this.strapi.createStationMapping({
+                  name: `${api1Name} ↔ ${api2Name}`,
+                  display_name: api1Name,
+                  api1_station: api1Station.id,
+                  api2_station: api2Station.id,
+                  is_main_station: false,
+                  is_active: true,
+                  mapping_type: 'automatic',
+                  confidence_score: 0.8
+                });
+                created++;
+                console.log(`✅ Сопоставление создано: ${api1Name} ↔ ${api2Name}`);
+              } catch (error) {
+                console.error(`❌ Ошибка создания сопоставления ${api1Name} ↔ ${api2Name}:`, error);
+              }
+            }
+          }
+        }
+      }
+
+      console.log(`✅ Автоматическое сопоставление завершено. Создано: ${created} сопоставлений`);
+    } catch (error) {
+      console.error('❌ Ошибка автоматического сопоставления станций:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Полная синхронизация
+   */
+  async syncAll(): Promise<void> {
+    try {
+      console.log('🚀 Начинаем полную синхронизацию...');
+      
+      // Синхронизируем станции
+      await this.syncApi1Stations();
+      await this.syncApi2Stations();
+      
+      // Сопоставляем станции
+      await this.autoMapStations();
+      
+      console.log('✅ Полная синхронизация завершена');
     } catch (error) {
       console.error('❌ Ошибка полной синхронизации:', error);
-      return {
-        success: false,
-        message: `Ошибка полной синхронизации: ${error}`,
-        details: { error: String(error) }
-      };
+      throw error;
     }
   }
 
-  // Проверка статуса синхронизации
-  async getSyncStatus(): Promise<{ lastSync: Date | null; stationsCount: number; routesCount: number; ordersCount: number }> {
-    try {
-      const [stations, routes, orders] = await Promise.all([
-        this.strapiService.getStations(),
-        this.strapiService.getRoutes(),
-        this.strapiService.getOrders()
-      ]);
-
-      return {
-        lastSync: new Date(), // TODO: Добавить сохранение времени последней синхронизации
-        stationsCount: stations.length,
-        routesCount: routes.length,
-        ordersCount: orders.length
-      };
-
-    } catch (error) {
-      console.error('❌ Ошибка получения статуса синхронизации:', error);
-      return {
-        lastSync: null,
-        stationsCount: 0,
-        routesCount: 0,
-        ordersCount: 0
-      };
-    }
+  /**
+   * Нормализация названия станции для сравнения
+   */
+  private normalizeStationName(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[ёе]/g, 'е')
+      .replace(/[йи]/g, 'и')
+      .replace(/[ъь]/g, '')
+      .replace(/[^а-яa-z0-9\s]/g, ' ')
+      .trim()
+      .replace(/\s+/g, ' ');
   }
 }
 

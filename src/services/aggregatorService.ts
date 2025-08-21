@@ -290,3 +290,4 @@ export class AggregatorService {
     }
   }
 }
+export default AggregatorService;

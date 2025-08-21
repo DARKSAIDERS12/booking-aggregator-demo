@@ -1,34 +1,33 @@
 import { Router } from 'express';
-import { BookingController } from '../controllers/bookingController';
+import BookingController from '../controllers/bookingController';
 
 const router = Router();
 const bookingController = new BookingController();
 
-// Получение всех станций из двух API
-router.get('/stations', bookingController.getStations.bind(bookingController));
-
-// Получение станций назначения из конкретной станции
+// Основные маршруты
+router.get('/routes/search', bookingController.searchRoutes.bind(bookingController));
+router.get('/stations', bookingController.getAllStations.bind(bookingController));
 router.get('/stations/from/:from', bookingController.getStationsFrom.bind(bookingController));
+router.get('/races/:raceId', bookingController.getRaceInfo.bind(bookingController));
 
-// Поиск рейсов в двух API
-router.get('/races', bookingController.searchRoutes.bind(bookingController));
-
-// Получение детальной информации о рейсе
-router.get('/races/:id', bookingController.getRouteInfo.bind(bookingController));
-
-// Тест соединений с API
+// Тестирование и статистика
 router.get('/test-connections', bookingController.testConnections.bind(bookingController));
-
-// Получение статистики API
 router.get('/api-stats', bookingController.getApiStats.bind(bookingController));
 
-// Бронирование заказа (пока заглушка)
-router.post('/register', bookingController.registerBooking.bind(bookingController));
+// Заказы
+router.post('/register', bookingController.registerOrder.bind(bookingController));
+router.post('/payment', bookingController.payOrder.bind(bookingController));
+router.post('/cancel', bookingController.cancelOrder.bind(bookingController));
 
-// Оплата заказа (пока заглушка)
-router.post('/payment', bookingController.processPayment.bind(bookingController));
+// Группировка станций
+router.post('/stations/group/auto', bookingController.autoGroupStations.bind(bookingController));
+router.post('/stations/group/manual', bookingController.manualGroupStations.bind(bookingController));
+router.get('/stations/groups', bookingController.getStationGroups.bind(bookingController));
+router.get('/stations/groups/:id', bookingController.getStationGroup.bind(bookingController));
+router.put('/stations/groups/:id', bookingController.updateStationGroup.bind(bookingController));
+router.delete('/stations/groups/:id', bookingController.deleteStationGroup.bind(bookingController));
 
-// Отмена билетов (пока заглушка)
-router.post('/cancel', bookingController.cancelTickets.bind(bookingController));
+// Статистика группировки
+router.get('/stations/group/stats', bookingController.getGroupingStats.bind(bookingController));
 
 export default router;

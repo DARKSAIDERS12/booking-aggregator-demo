@@ -6,65 +6,70 @@ const syncService = new SyncService();
 const strapiService = new StrapiService();
 
 export class SyncController {
-  // Запуск синхронизации станций
-  async syncStations(req: Request, res: Response) {
+  // Запуск синхронизации станций API 1
+  async syncApi1Stations(req: Request, res: Response) {
     try {
-      console.log('🔄 Запрос на синхронизацию станций...');
+      console.log('🔄 Запрос на синхронизацию станций API 1...');
       
-      const result = await syncService.syncStations();
+      await syncService.syncApi1Stations();
       
-      if (result.success) {
-        res.json({
-          success: true,
-          message: result.message,
-          count: result.count,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        res.status(400).json({
-          success: false,
-          error: result.message,
-          timestamp: new Date().toISOString()
-        });
-      }
+      res.json({
+        success: true,
+        message: 'Синхронизация станций API 1 завершена',
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
-      console.error('❌ Ошибка синхронизации станций:', error);
+      console.error('❌ Ошибка синхронизации станций API 1:', error);
       res.status(500).json({
         success: false,
         error: 'Внутренняя ошибка сервера',
-        message: 'Не удалось выполнить синхронизацию станций',
+        message: 'Не удалось выполнить синхронизацию станций API 1',
         timestamp: new Date().toISOString()
       });
     }
   }
 
-  // Запуск синхронизации маршрутов
-  async syncRoutes(req: Request, res: Response) {
+  // Запуск синхронизации станций API 2
+  async syncApi2Stations(req: Request, res: Response) {
     try {
-      console.log('🔄 Запрос на синхронизацию маршрутов...');
+      console.log('�� Запрос на синхронизацию станций API 2...');
       
-      const result = await syncService.syncRoutes();
+      await syncService.syncApi2Stations();
       
-      if (result.success) {
-        res.json({
-          success: true,
-          message: result.message,
-          count: result.count,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        res.status(400).json({
-          success: false,
-          error: result.message,
-          timestamp: new Date().toISOString()
-        });
-      }
+      res.json({
+        success: true,
+        message: 'Синхронизация станций API 2 завершена',
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
-      console.error('❌ Ошибка синхронизации маршрутов:', error);
+      console.error('❌ Ошибка синхронизации станций API 2:', error);
       res.status(500).json({
         success: false,
         error: 'Внутренняя ошибка сервера',
-        message: 'Не удалось выполнить синхронизацию маршрутов',
+        message: 'Не удалось выполнить синхронизацию станций API 2',
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  // Автоматическое сопоставление станций
+  async autoMapStations(req: Request, res: Response) {
+    try {
+      console.log('🔄 Запрос на автоматическое сопоставление станций...');
+      
+      await syncService.autoMapStations();
+      
+      res.json({
+        success: true,
+        message: 'Автоматическое сопоставление станций завершено',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Ошибка автоматического сопоставления станций:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Внутренняя ошибка сервера',
+        message: 'Не удалось выполнить автоматическое сопоставление станций',
         timestamp: new Date().toISOString()
       });
     }
@@ -75,23 +80,13 @@ export class SyncController {
     try {
       console.log('🔄 Запрос на полную синхронизацию...');
       
-      const result = await syncService.fullSync();
+      await syncService.syncAll();
       
-      if (result.success) {
-        res.json({
-          success: true,
-          message: result.message,
-          details: result.details,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        res.status(400).json({
-          success: false,
-          error: result.message,
-          details: result.details,
-          timestamp: new Date().toISOString()
-        });
-      }
+      res.json({
+        success: true,
+        message: 'Полная синхронизация завершена',
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
       console.error('❌ Ошибка полной синхронизации:', error);
       res.status(500).json({
@@ -108,7 +103,32 @@ export class SyncController {
     try {
       console.log('📊 Запрос статуса синхронизации...');
       
-      const status = await syncService.getSyncStatus();
+      const [api1Stations, api2Stations, mappings, groups] = await Promise.all([
+        strapiService.getApi1Stations(),
+        strapiService.getApi2Stations(),
+        strapiService.getStationMappings(),
+        strapiService.getStationGroups()
+      ]);
+      
+      const status = {
+        api1Stations: {
+          count: api1Stations.length,
+          lastUpdate: api1Stations.length > 0 ? api1Stations[0].attributes?.last_sync : null
+        },
+        api2Stations: {
+          count: api2Stations.length,
+          lastUpdate: api2Stations.length > 0 ? api2Stations[0].attributes?.last_sync : null
+        },
+        mappings: {
+          count: mappings.length,
+          automatic: mappings.filter(m => m.attributes?.mapping_type === 'automatic').length,
+          manual: mappings.filter(m => m.attributes?.mapping_type === 'manual').length
+        },
+        groups: {
+          count: groups.length
+        },
+        timestamp: new Date().toISOString()
+      };
       
       res.json({
         success: true,
@@ -129,9 +149,10 @@ export class SyncController {
   // Проверка здоровья системы синхронизации
   async healthCheck(req: Request, res: Response) {
     try {
-      const [strapiStatus, syncStatus] = await Promise.all([
+      const [strapiStatus, api1Stations, api2Stations] = await Promise.all([
         strapiService.testConnection(),
-        syncService.getSyncStatus()
+        strapiService.getApi1Stations(),
+        strapiService.getApi2Stations()
       ]);
 
       const health = {
@@ -139,11 +160,14 @@ export class SyncController {
           connected: strapiStatus,
           url: process.env.STRAPI_URL || 'http://localhost:1337'
         },
-        sync: syncStatus,
+        stations: {
+          api1: api1Stations.length,
+          api2: api2Stations.length
+        },
         timestamp: new Date().toISOString()
       };
 
-      const isHealthy = strapiStatus && syncStatus.stationsCount >= 0;
+      const isHealthy = strapiStatus && (api1Stations.length >= 0 || api2Stations.length >= 0);
 
       if (isHealthy) {
         res.json({
