@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import bookingRoutes from './routes/booking';
+import orderRoutes from './routes/orders';
+import syncRoutes from './routes/sync';
 import { adminRoutes } from './routes/admin';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -23,6 +25,8 @@ app.use((req, res, next) => {
 
 // Маршруты
 app.use('/api', bookingRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/sync', syncRoutes);
 app.use('/admin', adminRoutes);
 
 // Тестовый маршрут
@@ -32,6 +36,8 @@ app.get('/', (req, res) => {
     description: 'Агрегатор API для систем бронирования автобусных билетов',
     endpoints: {
       api: '/api/*',
+      orders: '/api/orders/*',
+      sync: '/api/sync/*',
       admin: '/admin/*',
       docs: 'https://github.com/your-repo/docs'
     }

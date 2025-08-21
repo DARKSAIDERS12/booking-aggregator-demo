@@ -114,42 +114,55 @@ export class Api1Service {
   }
 
   // Инициализация SOAP клиента
-  async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+  async initialize(): Promise<boolean> {
+    if (this.isInitialized) return true;
 
     try {
       console.log('🔌 Инициализация SOAP клиента для GDS API 1...');
       
-      // Создаем клиент из локального WSDL файла
-      this.client = await createClientAsync(this.wsdlUrl);
-      
-      // Устанавливаем базовый URL для SOAP вызовов
-      this.client.setEndpoint('https://cluster.avtovokzal.ru/gdstest/soap/sales');
-      
-      // Добавляем Basic Authentication для SOAP вызовов
-      if (this.username && this.password) {
-        // Создаем кастомный security объект с заголовками
-        const customSecurity = {
-          addHeaders: (headers: any) => {
-            headers['Authorization'] = 'Basic ' + Buffer.from(this.username + ':' + this.password).toString('base64');
-          },
-          toXML: () => ''
-        };
-        this.client.setSecurity(customSecurity);
+      // Проверяем доступность WSDL
+      try {
+        // Создаем клиент из локального WSDL файла
+        this.client = await createClientAsync(this.wsdlUrl);
+        
+        // Устанавливаем базовый URL для SOAP вызовов
+        this.client.setEndpoint('https://cluster.avtovokzal.ru/gdstest/soap/sales');
+        
+        // Добавляем Basic Authentication для SOAP вызовов
+        if (this.username && this.password) {
+          // Создаем кастомный security объект с заголовками
+          const customSecurity = {
+            addHeaders: (headers: any) => {
+              headers['Authorization'] = 'Basic ' + Buffer.from(this.username + ':' + this.password).toString('base64');
+            },
+            toXML: () => ''
+          };
+          this.client.setSecurity(customSecurity);
+        }
+        
+        this.isInitialized = true;
+        console.log('✅ SOAP клиент GDS API 1 инициализирован с аутентификацией');
+        return true;
+      } catch (wsdlError) {
+        console.warn('⚠️ WSDL недоступен, отключаем GDS API 1:', (wsdlError as Error).message);
+        this.isInitialized = false;
+        return false;
       }
-      
-      this.isInitialized = true;
-      console.log('✅ SOAP клиент GDS API 1 инициализирован с аутентификацией');
     } catch (error) {
       console.error('❌ Ошибка инициализации SOAP клиента:', error);
-      throw new Error('Не удалось инициализировать SOAP клиент для GDS API 1');
+      this.isInitialized = false;
+      return false;
     }
   }
 
   // Получение списка станций отправления
   async getStations(): Promise<Station[]> {
     try {
-      await this.initialize();
+      const isInitialized = await this.initialize();
+      if (!isInitialized) {
+        console.log('⚠️ GDS API 1 недоступен, возвращаем пустой список станций');
+        return [];
+      }
       
       console.log('🔍 Запрос станций из GDS API 1...');
       
@@ -214,7 +227,11 @@ export class Api1Service {
   // Получение станций назначения из конкретной станции
   async getStationsFrom(fromStationId: string): Promise<Station[]> {
     try {
-      await this.initialize();
+      const isInitialized = await this.initialize();
+      if (!isInitialized) {
+        console.log('⚠️ GDS API 1 недоступен, возвращаем пустой список станций назначения');
+        return [];
+      }
       
       console.log(`🔍 Запрос станций назначения из ${fromStationId} в GDS API 1...`);
       
@@ -256,7 +273,11 @@ export class Api1Service {
   // Поиск рейсов
   async searchRoutes(params: { from: string; to: string; date: string }): Promise<Route[]> {
     try {
-      await this.initialize();
+      const isInitialized = await this.initialize();
+      if (!isInitialized) {
+        console.log('⚠️ GDS API 1 недоступен, возвращаем пустой список рейсов');
+        return [];
+      }
       
       console.log('🔍 Поиск рейсов в GDS API 1:', params);
       
