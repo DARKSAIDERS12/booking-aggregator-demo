@@ -1,372 +1,154 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 export interface StrapiOrder {
-  id?: number;
-  order_number: string;
+  id: number;
   customer_name: string;
   customer_phone?: string;
   customer_email?: string;
-  status: 'pending' | 'paid' | 'canceled';
   total_amount: number;
   currency: 'RUB' | 'KZT' | 'USD';
-  route: number;
-  payment_id?: string;
+  status: 'pending' | 'paid' | 'canceled';
+  order_number: string;
+  route: string;
 }
 
-export interface StrapiRoute {
-  id: number;
-  departure_time: string;
-  arrival_time: string;
-  price: number;
-  currency: string;
-  carrier: string;
-  route_code: string;
-  data_source: string;
-  route_status: string;
-  seats_available: number;
-  from_station: number;
-  to_station: number;
-}
-
-export interface StrapiStation {
-  id: number;
-  station_id: string;
-  name: string;
-  country: string;
-  region?: string;
-  latitude: number;
-  longitude: number;
-  api_source: 'gds' | 'paybilet';
-  is_active: boolean;
-}
-
-export class StrapiService {
-  private client: AxiosInstance;
+export default class StrapiService {
   private baseUrl: string;
   private apiToken: string;
 
   constructor() {
     this.baseUrl = process.env.STRAPI_URL || 'http://localhost:1337';
     this.apiToken = process.env.STRAPI_API_TOKEN || '';
-    
-    this.client = axios.create({
-      baseURL: this.baseUrl,
-      headers: {
-        'Authorization': `Bearer ${this.apiToken}`,
-        'Content-Type': 'application/json'
-      }
-    });
   }
 
-  // Заказы
-  async createOrder(orderData: StrapiOrder): Promise<StrapiOrder> {
+  private async makeRequest(method: string, endpoint: string, data?: any) {
     try {
-      // Преобразуем route_id в правильный формат для Strapi
-      const strapiOrderData = {
-        ...orderData,
-        route: orderData.route // Strapi ожидает ID маршрута как число
-      };
-
-      console.log('📤 Отправляем заказ в Strapi:', strapiOrderData);
-
-      const response = await this.client.post('/api/orders', {
-        data: strapiOrderData
+      const response = await axios({
+        method,
+        url: `${this.baseUrl}/api${endpoint}`,
+        headers: {
+          'Authorization': `Bearer ${this.apiToken}`,
+          'Content-Type': 'application/json'
+        },
+        data
       });
-
-      console.log('✅ Заказ успешно создан в Strapi:', response.data);
-      return response.data.data;
+      return response;
     } catch (error) {
-      console.error('❌ Ошибка создания заказа в Strapi:', error);
-      if ((error as any).response) {
-        console.error('Детали ошибки:', (error as any).response.data);
-      }
+      console.error(`Ошибка ${method} запроса к ${endpoint}:`, error);
       throw error;
     }
   }
 
-  async getOrders(): Promise<StrapiOrder[]> {
+  // Методы для работы с заказами
+  async createOrder(orderData: any): Promise<any> {
     try {
-      const response = await this.client.get('/api/orders');
-      return response.data.data || [];
+      const response = await this.makeRequest('POST', '/orders', orderData);
+      return response.data;
     } catch (error) {
-      console.error('Ошибка получения заказов из Strapi:', error);
+      console.error('Ошибка создания заказа:', error);
       throw error;
     }
   }
 
-  async getOrder(id: number): Promise<StrapiOrder | null> {
+  async updateOrder(orderId: string, updateData: any): Promise<any> {
     try {
-      const response = await this.client.get(`/api/orders/${id}`);
-      return response.data.data;
+      const response = await this.makeRequest('PUT', `/orders/${orderId}`, updateData);
+      return response.data;
     } catch (error) {
-      console.error(`Ошибка получения заказа ${id} из Strapi:`, error);
-      return null;
-    }
-  }
-
-  async updateOrder(id: number, orderData: Partial<StrapiOrder>): Promise<StrapiOrder | null> {
-    try {
-      const response = await this.client.put(`/api/orders/${id}`, {
-        data: orderData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления заказа ${id} в Strapi:`, error);
-      return null;
-    }
-  }
-
-  // Станции (legacy)
-  async getStations(): Promise<StrapiStation[]> {
-    try {
-      const response = await this.client.get('/api/tests');
-      return response.data.data || [];
-    } catch (error) {
-      console.error('Ошибка получения станций из Strapi:', error);
+      console.error('Ошибка обновления заказа:', error);
       throw error;
     }
   }
 
-  async getStation(id: number): Promise<StrapiStation | null> {
+  async getOrder(orderId: string): Promise<any> {
     try {
-      const response = await this.client.get(`/api/tests/${id}`);
-      return response.data.data;
+      const response = await this.makeRequest('GET', `/orders/${orderId}`);
+      return response.data;
     } catch (error) {
-      console.error(`Ошибка получения станции ${id} из Strapi:`, error);
-      return null;
-    }
-  }
-
-  async createStation(stationData: StrapiStation): Promise<StrapiStation> {
-    try {
-      const response = await this.client.post('/api/tests', {
-        data: stationData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error('Ошибка создания станции в Strapi:', error);
+      console.error('Ошибка получения заказа:', error);
       throw error;
     }
   }
 
-  async updateStation(id: number, stationData: Partial<StrapiStation>): Promise<StrapiStation | null> {
+  async getOrders(): Promise<any[]> {
     try {
-      const response = await this.client.put(`/api/tests/${id}`, {
-        data: stationData
-      });
-      return response.data.data;
+      const response = await this.makeRequest('GET', '/orders');
+      return response.data || [];
     } catch (error) {
-      console.error(`Ошибка обновления станции ${id} в Strapi:`, error);
-      return null;
+      console.error('Ошибка получения всех заказов:', error);
+      return [];
     }
   }
 
-  // API 1 Станции (GDS)
+  // Базовые методы для работы с API
   async getApi1Stations(): Promise<any[]> {
     try {
-      const response = await this.client.get("/api/api1-stations");
-      return response.data.data || [];
+      const response = await this.makeRequest('GET', '/api1-stations');
+      return response.data || [];
     } catch (error) {
-      console.error("Ошибка получения API 1 станций из Strapi:", error);
+      console.error('Ошибка получения станций API 1:', error);
       return [];
     }
   }
 
-  async createApi1Station(stationData: any): Promise<any> {
-    try {
-      const response = await this.client.post("/api/api1-stations", {
-        data: stationData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error("Ошибка создания API 1 станции в Strapi:", error);
-      throw error;
-    }
-  }
-
-  async updateApi1Station(id: number, stationData: any): Promise<any> {
-    try {
-      const response = await this.client.put(`/api/api1-stations/${id}`, {
-        data: stationData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления API 1 станции ${id} в Strapi:`, error);
-      throw error;
-    }
-  }
-
-  // API 2 Станции (Paybilet)
   async getApi2Stations(): Promise<any[]> {
     try {
-      const response = await this.client.get("/api/api2-stations");
-      return response.data.data || [];
+      const response = await this.makeRequest('GET', '/api2-stations');
+      return response.data || [];
     } catch (error) {
-      console.error("Ошибка получения API 2 станций из Strapi:", error);
+      console.error('Ошибка получения станций API 2:', error);
       return [];
     }
   }
 
-  async createApi2Station(stationData: any): Promise<any> {
-    try {
-      const response = await this.client.post("/api/api2-stations", {
-        data: stationData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error("Ошибка создания API 2 станции в Strapi:", error);
-      throw error;
-    }
-  }
-
-  async updateApi2Station(id: number, stationData: any): Promise<any> {
-    try {
-      const response = await this.client.put(`/api/api2-stations/${id}`, {
-        data: stationData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления API 2 станции ${id} в Strapi:`, error);
-      throw error;
-    }
-  }
-
-  // Сопоставление станций
   async getStationMappings(): Promise<any[]> {
     try {
-      const response = await this.client.get("/api/station-mappings");
-      return response.data.data || [];
+      const response = await this.makeRequest('GET', '/station-mappings');
+      return response.data || [];
     } catch (error) {
-      console.error("Ошибка получения сопоставлений станций из Strapi:", error);
+      console.error('Ошибка получения сопоставлений станций:', error);
       return [];
     }
   }
 
-  async createStationMapping(mappingData: any): Promise<any> {
-    try {
-      const response = await this.client.post("/api/station-mappings", {
-        data: mappingData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error("Ошибка создания сопоставления станций в Strapi:", error);
-      throw error;
-    }
-  }
-
-  async updateStationMapping(id: number, mappingData: any): Promise<any> {
-    try {
-      const response = await this.client.put(`/api/station-mappings/${id}`, {
-        data: mappingData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления сопоставления станций ${id} в Strapi:`, error);
-      throw error;
-    }
-  }
-
-  // Группы станций
   async getStationGroups(): Promise<any[]> {
     try {
-      const response = await this.client.get("/api/station-groups");
-      return response.data.data || [];
+      const response = await this.makeRequest('GET', '/station-groups');
+      return response.data || [];
     } catch (error) {
-      console.error("Ошибка получения групп станций из Strapi:", error);
+      console.error('Ошибка получения групп станций:', error);
       return [];
+    }
+  }
+
+  // Методы для создания и обновления
+  async createStationMapping(mappingData: any): Promise<any> {
+    try {
+      const response = await this.makeRequest('POST', '/station-mappings', mappingData);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка создания сопоставления станций:', error);
+      throw error;
     }
   }
 
   async createStationGroup(groupData: any): Promise<any> {
     try {
-      const response = await this.client.post("/api/station-groups", {
-        data: groupData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error("Ошибка создания группы станций в Strapi:", error);
-      throw error;
-    }
-  }
-
-  async updateStationGroup(id: number, groupData: any): Promise<any> {
-    try {
-      const response = await this.client.put(`/api/station-groups/${id}`, {
-        data: groupData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления группы станций ${id} в Strapi:`, error);
-      return null;
-    }
-  }
-
-  // Маршруты
-  async getRoutes(): Promise<StrapiRoute[]> {
-    try {
-      const response = await this.client.get('/api/test2s');
-      return response.data.data || [];
-    } catch (error) {
-      console.error('Ошибка получения маршрутов из Strapi:', error);
-      throw error;
-    }
-  }
-
-  async getRoute(id: number): Promise<StrapiRoute | null> {
-    try {
-      const response = await this.client.get(`/api/test2s/${id}`);
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка получения маршрута ${id} из Strapi:`, error);
-      return null;
-    }
-  }
-
-  async createRoute(routeData: StrapiRoute): Promise<StrapiRoute> {
-    try {
-      const response = await this.client.post('/api/test2s', {
-        data: routeData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error('Ошибка создания маршрута в Strapi:', error);
-      throw error;
-    }
-  }
-
-  async updateRoute(id: number, routeData: Partial<StrapiRoute>): Promise<StrapiRoute | null> {
-    try {
-      const response = await this.client.put(`/api/test2s/${id}`, {
-        data: routeData
-      });
-      return response.data.data;
-    } catch (error) {
-      console.error(`Ошибка обновления маршрута ${id} в Strapi:`, error);
-      return null;
-    }
-  }
-
-  // Проверка соединения
-  async testConnection(): Promise<boolean> {
-    try {
-      await this.client.get('/api/tests');
-      return true;
-    } catch (error) {
-      console.error('Ошибка соединения со Strapi:', error);
-      return false;
-    }
-  }
-
-  // Получение информации о системе
-  async getSystemInfo(): Promise<any> {
-    try {
-      const response = await this.client.get('/admin/information');
+      const response = await this.makeRequest('POST', '/station-groups', groupData);
       return response.data;
     } catch (error) {
-      console.error('Ошибка получения информации о системе:', error);
-      return null;
+      console.error('Ошибка создания группы станций:', error);
+      throw error;
+    }
+  }
+
+  async updateStationGroup(groupId: string, updateData: any): Promise<any> {
+    try {
+      const response = await this.makeRequest('PUT', `/station-groups/${groupId}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка обновления группы станций:', error);
+      throw error;
     }
   }
 }
-
-export default StrapiService;
