@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Aggregator - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: #3498db;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .results {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .results pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>�� Booking Aggregator Dashboard</h1>
+            <p>Тестирование и управление API для системы бронирования автобусных билетов</p>
+        </div>
+
+        <div class="nav">
+            <div class="nav-links">
+                <a href="#search" class="nav-link">🔍 Поиск маршрутов</a>
+                <a href="#stations" class="nav-link">🚉 Управление станциями</a>
+                <a href="#orders" class="nav-link">📋 Заказы</a>
+                <a href="#sync" class="nav-link">🔄 Синхронизация</a>
+                <a href="#health" class="nav-link">💚 Мониторинг</a>
+                <a href="station-management.html" class="nav-link">⚙️ Группировка станций</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Поиск маршрутов -->
+            <div id="search" class="section">
+                <h2>🔍 Поиск маршрутов</h2>
+                <div class="card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="from-station">Откуда:</label>
+                            <input type="text" id="from-station" placeholder="Например: Южно-Сахалинск" value="Южно-Сахалинск">
+                        </div>
+                        <div class="form-group">
+                            <label for="to-station">Куда:</label>
+                            <input type="text" id="to-station" placeholder="Например: Холмск" value="Холмск">
+                        </div>
+                        <div class="form-group">
+                            <label for="travel-date">Дата:</label>
+                            <input type="date" id="travel-date">
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="searchRoutes()">🔍 Найти маршруты</button>
+                    <div id="search-results" class="results" style="display: none;">
+                        <h4>Результаты поиска:</h4>
+                        <div id="search-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Управление станциями -->
+            <div id="stations" class="section">
+                <h2>🚉 Управление станциями</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Получить все станции</h3>
+                        <button class="btn" onclick="getAllStations()">📋 Загрузить станции</button>
+                        <div id="stations-results" class="results" style="display: none;">
+                            <h4>Список станций:</h4>
+                            <div id="stations-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Поиск станций по направлению</h3>
+                        <div class="form-group">
+                            <label for="from-direction">Откуда:</label>
+                            <input type="text" id="from-direction" placeholder="Введите название станции">
+                        </div>
+                        <button class="btn" onclick="getStationsFrom()">🔍 Найти</button>
+                        <div id="direction-results" class="results" style="display: none;">
+                            <h4>Результаты:</h4>
+                            <div id="direction-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Информация о маршруте</h3>
+                        <div class="form-group">
+                            <label for="race-id">ID маршрута:</label>
+                            <input type="text" id="race-id" placeholder="Введите ID маршрута">
+                        </div>
+                        <button class="btn" onclick="getRaceInfo()">📊 Получить информацию</button>
+                        <div id="race-results" class="results" style="display: none;">
+                            <h4>Информация о маршруте:</h4>
+                            <div id="race-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Заказы -->
+            <div id="orders" class="section">
+                <h2>📋 Управление заказами</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Регистрация заказа</h3>
+                        <div class="form-group">
+                            <label for="customer-name">Имя клиента:</label>
+                            <input type="text" id="customer-name" placeholder="Иван Иванов">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone">Телефон:</label>
+                            <input type="tel" id="customer-phone" placeholder="+7 (999) 123-45-67">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email">Email:</label>
+                            <input type="email" id="customer-email" placeholder="ivan@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="route-id">ID маршрута:</label>
+                            <input type="number" id="route-id" placeholder="123">
+                        </div>
+                        <div class="form-group">
+                            <label for="total-amount">Сумма:</label>
+                            <input type="number" id="total-amount" placeholder="1500" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Валюта:</label>
+                            <select id="currency">
+                                <option value="RUB">RUB</option>
+                                <option value="KZT">KZT</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="registerOrder()">📝 Зарегистрировать заказ</button>
+                        <div id="register-results" class="results" style="display: none;">
+                            <h4>Результат регистрации:</h4>
+                            <div id="register-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Оплата заказа</h3>
+                        <div class="form-group">
+                            <label for="order-id-pay">ID заказа:</label>
+                            <input type="number" id="order-id-pay" placeholder="123">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment-method">Способ оплаты:</label>
+                            <select id="payment-method">
+                                <option value="card">Банковская карта</option>
+                                <option value="cash">Наличные</option>
+                                <option value="transfer">Банковский перевод</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="payOrder()">💳 Оплатить заказ</button>
+                        <div id="payment-results" class="results" style="display: none;">
+                            <h4>Результат оплаты:</h4>
+                            <div id="payment-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Отмена заказа</h3>
+                        <div class="form-group">
+                            <label for="order-id-cancel">ID заказа:</label>
+                            <input type="number" id="order-id-cancel" placeholder="123">
+                        </div>
+                        <div class="form-group">
+                            <label for="cancel-reason">Причина отмены:</label>
+                            <input type="text" id="cancel-reason" placeholder="Необязательно">
+                        </div>
+                        <button class="btn btn-warning" onclick="cancelOrder()">❌ Отменить заказ</button>
+                        <div id="cancel-results" class="results" style="display: none;">
+                            <h4>Результат отмены:</h4>
+                            <div id="cancel-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Синхронизация -->
+            <div id="sync" class="section">
+                <h2>🔄 Синхронизация данных</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Синхронизация станций API 1</h3>
+                        <p>Синхронизация станций из GDS API</p>
+                        <button class="btn" onclick="syncApi1Stations()">🔄 Запустить</button>
+                        <div id="sync-api1-results" class="results" style="display: none;">
+                            <h4>Результат синхронизации:</h4>
+                            <div id="sync-api1-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Синхронизация станций API 2</h3>
+                        <p>Синхронизация станций из Paybilet API</p>
+                        <button class="btn" onclick="syncApi2Stations()">🔄 Запустить</button>
+                        <div id="sync-api2-results" class="results" style="display: none;">
+                            <h4>Результат синхронизации:</h4>
+                            <div id="sync-api2-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Автоматическое сопоставление</h3>
+                        <p>Сопоставление станций между API</p>
+                        <button class="btn" onclick="autoMapStations()">🔗 Запустить</button>
+                        <div id="mapping-results" class="results" style="display: none;">
+                            <h4>Результат сопоставления:</h4>
+                            <div id="mapping-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Полная синхронизация</h3>
+                        <p>Выполнить все операции синхронизации</p>
+                        <button class="btn btn-success" onclick="fullSync()">🚀 Запустить</button>
+                        <div id="full-sync-results" class="results" style="display: none;">
+                            <h4>Результат полной синхронизации:</h4>
+                            <div id="full-sync-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Мониторинг -->
+            <div id="health" class="section">
+                <h2>💚 Мониторинг системы</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Проверка соединений</h3>
+                        <button class="btn" onclick="testConnections()">🔍 Проверить</button>
+                        <div id="connections-results" class="results" style="display: none;">
+                            <h4>Статус соединений:</h4>
+                            <div id="connections-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Статистика API</h3>
+                        <button class="btn" onclick="getApiStats()">📊 Получить</button>
+                        <div id="stats-results" class="results" style="display: none;">
+                            <h4>Статистика API:</h4>
+                            <div id="stats-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Статус синхронизации</h3>
+                        <button class="btn" onclick="getSyncStatus()">📋 Проверить</button>
+                        <div id="sync-status-results" class="results" style="display: none;">
+                            <h4>Статус синхронизации:</h4>
+                            <div id="sync-status-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Проверка здоровья</h3>
+                        <button class="btn" onclick="healthCheck()">💚 Проверить</button>
+                        <div id="health-results" class="results" style="display: none;">
+                            <h4>Статус здоровья:</h4>
+                            <div id="health-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Установить текущую дату по умолчанию
+        document.getElementById('travel-date').value = new Date().toISOString().split('T')[0];
+
+        // Поиск маршрутов
+        async function searchRoutes() {
+            const from = document.getElementById('from-station').value;
+            const to = document.getElementById('to-station').value;
+            const date = document.getElementById('travel-date').value;
+
+            if (!from || !to || !date) {
+                showStatus('error', 'Заполните все поля для поиска');
+                return;
+            }
+
+            try {
+                showLoading('search-content');
+                document.getElementById('search-results').style.display = 'block';
+
+                const response = await fetch(`/api/routes/search?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(date)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('search-content').innerHTML = `
+                        <div class="status success">✅ Найдено ${data.data.routes.length} маршрутов</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('search-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('search-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('search-content');
+            }
+        }
+
+        // Получить все станции
+        async function getAllStations() {
+            try {
+                showLoading('stations-content');
+                document.getElementById('stations-results').style.display = 'block';
+
+                const response = await fetch('/api/stations');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('stations-content').innerHTML = `
+                        <div class="status success">✅ Загружено ${data.data.length} станций</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('stations-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('stations-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('stations-content');
+            }
+        }
+
+        // Получить станции по направлению
+        async function getStationsFrom() {
+            const from = document.getElementById('from-direction').value;
+            if (!from) {
+                showStatus('error', 'Введите название станции');
+                return;
+            }
+
+            try {
+                showLoading('direction-content');
+                document.getElementById('direction-results').style.display = 'block';
+
+                const response = await fetch(`/api/stations/from/${encodeURIComponent(from)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('direction-content').innerHTML = `
+                        <div class="status success">✅ Найдено ${data.data.length} станций</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('direction-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('direction-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('direction-content');
+            }
+        }
+
+        // Получить информацию о маршруте
+        async function getRaceInfo() {
+            const raceId = document.getElementById('race-id').value;
+            if (!raceId) {
+                showStatus('error', 'Введите ID маршрута');
+                return;
+            }
+
+            try {
+                showLoading('race-content');
+                document.getElementById('race-results').style.display = 'block';
+
+                const response = await fetch(`/api/races/${raceId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('race-content').innerHTML = `
+                        <div class="status success">✅ Информация получена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('race-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('race-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('race-content');
+            }
+        }
+
+        // Регистрация заказа
+        async function registerOrder() {
+            const orderData = {
+                customer_name: document.getElementById('customer-name').value,
+                customer_phone: document.getElementById('customer-phone').value,
+                customer_email: document.getElementById('customer-email').value,
+                route_id: document.getElementById('route-id').value,
+                total_amount: document.getElementById('total-amount').value,
+                currency: document.getElementById('currency').value
+            };
+
+            if (!orderData.customer_name || !orderData.route_id || !orderData.total_amount || !orderData.currency) {
+                showStatus('error', 'Заполните обязательные поля');
+                return;
+            }
+
+            try {
+                showLoading('register-content');
+                document.getElementById('register-results').style.display = 'block';
+
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('register-content').innerHTML = `
+                        <div class="status success">✅ Заказ успешно зарегистрирован</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('register-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('register-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('register-content');
+            }
+        }
+
+        // Оплата заказа
+        async function payOrder() {
+            const orderId = document.getElementById('order-id-pay').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            if (!orderId || !paymentMethod) {
+                showStatus('error', 'Заполните все поля');
+                return;
+            }
+
+            try {
+                showLoading('payment-content');
+                document.getElementById('payment-results').style.display = 'block';
+
+                const response = await fetch('/api/payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        payment_method: paymentMethod
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('payment-content').innerHTML = `
+                        <div class="status success">✅ Заказ успешно оплачен</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('payment-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('payment-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('payment-content');
+            }
+        }
+
+        // Отмена заказа
+        async function cancelOrder() {
+            const orderId = document.getElementById('order-id-cancel').value;
+            const reason = document.getElementById('cancel-reason').value;
+
+            if (!orderId) {
+                showStatus('error', 'Введите ID заказа');
+                return;
+            }
+
+            try {
+                showLoading('cancel-content');
+                document.getElementById('cancel-results').style.display = 'block';
+
+                const response = await fetch('/api/cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        reason: reason
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('cancel-content').innerHTML = `
+                        <div class="status success">✅ Заказ успешно отменен</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('cancel-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('cancel-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('cancel-content');
+            }
+        }
+
+        // Синхронизация API 1
+        async function syncApi1Stations() {
+            try {
+                showLoading('sync-api1-content');
+                document.getElementById('sync-api1-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/stations/api1', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('sync-api1-content').innerHTML = `
+                        <div class="status success">✅ Синхронизация завершена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('sync-api1-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('sync-api1-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('sync-api1-content');
+            }
+        }
+
+        // Синхронизация API 2
+        async function syncApi2Stations() {
+            try {
+                showLoading('sync-api2-content');
+                document.getElementById('sync-api2-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/stations/api2', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('sync-api2-content').innerHTML = `
+                        <div class="status success">✅ Синхронизация завершена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('sync-api2-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('sync-api2-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+                }
+            } finally {
+                hideLoading('sync-api2-content');
+            }
+        }
+
+        // Автоматическое сопоставление
+        async function autoMapStations() {
+            try {
+                showLoading('mapping-content');
+                document.getElementById('mapping-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/stations/map', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('mapping-content').innerHTML = `
+                        <div class="status success">✅ Сопоставление завершено</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('mapping-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('mapping-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('mapping-content');
+            }
+        }
+
+        // Полная синхронизация
+        async function fullSync() {
+            try {
+                showLoading('full-sync-content');
+                document.getElementById('full-sync-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/full', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('full-sync-content').innerHTML = `
+                        <div class="status success">✅ Полная синхронизация завершена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('full-sync-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('full-sync-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('full-sync-content');
+            }
+        }
+
+        // Проверка соединений
+        async function testConnections() {
+            try {
+                showLoading('connections-content');
+                document.getElementById('connections-results').style.display = 'block';
+
+                const response = await fetch('/api/test-connections');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('connections-content').innerHTML = `
+                        <div class="status success">✅ Проверка завершена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('connections-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('connections-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('connections-content');
+            }
+        }
+
+        // Получить статистику API
+        async function getApiStats() {
+            try {
+                showLoading('stats-content');
+                document.getElementById('stats-results').style.display = 'block';
+
+                const response = await fetch('/api/api-stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('stats-content').innerHTML = `
+                        <div class="status success">✅ Статистика получена</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('stats-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('stats-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('stats-content');
+            }
+        }
+
+        // Получить статус синхронизации
+        async function getSyncStatus() {
+            try {
+                showLoading('sync-status-content');
+                document.getElementById('sync-status-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/status');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('sync-status-content').innerHTML = `
+                        <div class="status success">✅ Статус получен</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('sync-status-content').innerHTML = `
+                        <div class="status error">❌ Ошибка: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('sync-status-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('sync-status-content');
+            }
+        }
+
+        // Проверка здоровья
+        async function healthCheck() {
+            try {
+                showLoading('health-content');
+                document.getElementById('health-results').style.display = 'block';
+
+                const response = await fetch('/api/sync/health');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('health-content').innerHTML = `
+                        <div class="status success">✅ Система здорова</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('health-content').innerHTML = `
+                        <div class="status error">❌ Проблемы в системе</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('health-content').innerHTML = `
+                    <div class="status error">❌ Ошибка: ${error.message}</div>
+                `;
+            } finally {
+                hideLoading('health-content');
+            }
+        }
+
+        // Показать загрузку
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Загрузка...</p>
+                </div>
+            `;
+        }
+
+        // Скрыть загрузку
+        function hideLoading(elementId) {
+            // Загрузка скрывается автоматически при получении данных
+        }
+
+        // Показать статус
+        function showStatus(type, message) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            
+            document.querySelector('.content').insertBefore(statusDiv, document.querySelector('.content').firstChild);
+            
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

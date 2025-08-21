@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление группировкой станций - Booking Aggregator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: #3498db;
+            color: #3498db;
+        }
+
+        .tab:hover {
+            background: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .station-card {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .station-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .station-card.selected {
+            border-color: #27ae60;
+            background: #f0fff4;
+        }
+
+        .station-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .station-info {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 Управление группировкой станций</h1>
+            <p>Система автоматического и ручного сопоставления станций между API</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('overview')">Обзор</div>
+                <div class="tab" onclick="showTab('auto-grouping')">Автогруппировка</div>
+                <div class="tab" onclick="showTab('manual-grouping')">Ручная группировка</div>
+                <div class="tab" onclick="showTab('mappings')">Сопоставления</div>
+                <div class="tab" onclick="showTab('sync')">Синхронизация</div>
+            </div>
+
+            <!-- Вкладка Обзор -->
+            <div id="overview" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-stations">-</div>
+                        <div class="stat-label">Всего станций</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-groups">-</div>
+                        <div class="stat-label">Групп станций</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-mappings">-</div>
+                        <div class="stat-label">Сопоставлений</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="auto-mappings">-</div>
+                        <div class="stat-label">Автоматических</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Быстрые действия</h3>
+                    <button class="btn btn-success" onclick="loadStats()">Обновить статистику</button>
+                    <button class="btn btn-warning" onclick="runAutoGrouping()">Запустить автогруппировку</button>
+                    <button class="btn" onclick="runFullSync()">Полная синхронизация</button>
+                </div>
+
+                <div class="card">
+                    <h3>Последние действия</h3>
+                    <div id="recent-actions">
+                        <p>Нажмите "Обновить статистику" для загрузки данных</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка Автогруппировка -->
+            <div id="auto-grouping" class="tab-content">
+                <div class="card">
+                    <h3>Автоматическая группировка станций</h3>
+                    <p>Система автоматически сопоставит станции по названию и создаст группы.</p>
+                    <button class="btn btn-success" onclick="runAutoGrouping()">Запустить автогруппировку</button>
+                </div>
+
+                <div class="card">
+                    <h3>Результаты автогруппировки</h3>
+                    <div id="auto-grouping-results">
+                        <p>Результаты появятся после выполнения автогруппировки</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка Ручная группировка -->
+            <div id="manual-grouping" class="tab-content">
+                <div class="card">
+                    <h3>Создание группы станций</h3>
+                    <div class="form-group">
+                        <label for="group-name">Название группы:</label>
+                        <input type="text" id="group-name" placeholder="Например: Холмск (все станции)">
+                    </div>
+                    <div class="form-group">
+                        <label for="station-search">Поиск станций:</label>
+                        <input type="text" id="station-search" placeholder="Введите название станции">
+                    </div>
+                    <button class="btn btn-success" onclick="searchStations()">Найти станции</button>
+                </div>
+
+                <div class="card">
+                    <h3>Найденные станции</h3>
+                    <div id="search-results" class="station-grid">
+                        <p>Введите название станции для поиска</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Выбранные станции</h3>
+                    <div id="selected-stations" class="station-grid">
+                        <p>Выберите станции для группировки</p>
+                    </div>
+                    <button class="btn btn-success" onclick="createGroup()" style="display: none;">Создать группу</button>
+                </div>
+            </div>
+
+            <!-- Вкладка Сопоставления -->
+            <div id="mappings" class="tab-content">
+                <div class="card">
+                    <h3>Существующие сопоставления</h3>
+                    <button class="btn" onclick="loadMappings()">Загрузить сопоставления</button>
+                </div>
+
+                <div id="mappings-list">
+                    <p>Нажмите "Загрузить сопоставления" для просмотра</p>
+                </div>
+            </div>
+
+            <!-- Вкладка Синхронизация -->
+            <div id="sync" class="tab-content">
+                <div class="card">
+                    <h3>Синхронизация данных</h3>
+                    <div class="form-group">
+                        <label>Выберите тип синхронизации:</label>
+                        <select id="sync-type">
+                            <option value="api1">API 1 (GDS) - Станции</option>
+                            <option value="api2">API 2 (Paybilet) - Станции</option>
+                            <option value="mapping">Автоматическое сопоставление</option>
+                            <option value="full">Полная синхронизация</option>
+        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="runSync()">Запустить синхронизацию</button>
+                </div>
+
+                <div class="card">
+                    <h3>Статус синхронизации</h3>
+                    <div id="sync-status">
+                        <p>Выберите тип и запустите синхронизацию</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedStations = [];
+        let allStations = [];
+
+        // Показать вкладку
+        function showTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Загрузить данные для вкладки
+            if (tabName === 'overview') {
+                loadStats();
+            }
+        }
+
+        // Загрузить статистику
+        async function loadStats() {
+            try {
+                showLoading('overview');
+                
+                const response = await fetch('/api/stations/group/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('total-stations').textContent = 
+                        data.data.total_api1_stations + data.data.total_api2_stations;
+                    document.getElementById('total-groups').textContent = data.data.total_groups;
+                    document.getElementById('total-mappings').textContent = data.data.total_mappings;
+                    document.getElementById('auto-mappings').textContent = data.data.automatic_mappings;
+                    
+                    document.getElementById('recent-actions').innerHTML = `
+                        <p>✅ Статистика обновлена: ${new Date().toLocaleString()}</p>
+                        <p>📊 API 1 станций: ${data.data.total_api1_stations}</p>
+                        <p>📊 API 2 станций: ${data.data.total_api2_stations}</p>
+                        <p>🔗 Автоматических сопоставлений: ${data.data.automatic_mappings}</p>
+                        <p>🔗 Ручных сопоставлений: ${data.data.manual_mappings}</p>
+                    `;
+                } else {
+                    showAlert('error', 'Ошибка загрузки статистики: ' + data.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Ошибка загрузки статистики: ' + error.message);
+            } finally {
+                hideLoading('overview');
+            }
+        }
+
+        // Запустить автогруппировку
+        async function runAutoGrouping() {
+            try {
+                showLoading('auto-grouping');
+                showAlert('info', 'Запуск автоматической группировки...');
+                
+                const response = await fetch('/api/stations/group/auto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', `Автогруппировка завершена! Создано ${data.data.length} групп.`);
+                    document.getElementById('auto-grouping-results').innerHTML = `
+                        <h4>Результаты:</h4>
+                        <p>✅ Создано групп: ${data.data.length}</p>
+                        <p>⏰ Время выполнения: ${new Date().toLocaleString()}</p>
+                        <div class="station-grid">
+                            ${data.data.map(group => `
+                                <div class="station-card">
+                                    <h4>${group.attributes?.name || group.name}</h4>
+                                    <p>ID: ${group.id}</p>
+                                    <p>Активна: ${group.attributes?.is_active ? 'Да' : 'Нет'}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    showAlert('error', 'Ошибка автогруппировки: ' + data.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Ошибка автогруппировки: ' + error.message);
+            } finally {
+                hideLoading('auto-grouping');
+            }
+        }
+
+        // Поиск станций
+        async function searchStations() {
+            const searchTerm = document.getElementById('station-search').value.trim();
+            if (!searchTerm) {
+                showAlert('error', 'Введите название станции для поиска');
+                return;
+            }
+
+            try {
+                showLoading('manual-grouping');
+                
+                const response = await fetch(`/api/stations?search=${encodeURIComponent(searchTerm)}`);
+                const data = await response.json();
+                
+                if (data.success && data.data.length > 0) {
+                    allStations = data.data;
+                    displaySearchResults(data.data);
+                } else {
+                    document.getElementById('search-results').innerHTML = '<p>Станции не найдены</p>';
+                }
+            } catch (error) {
+                showAlert('error', 'Ошибка поиска станций: ' + error.message);
+            } finally {
+                hideLoading('manual-grouping');
+            }
+        }
+
+        // Отобразить результаты поиска
+        function displaySearchResults(stations) {
+            const container = document.getElementById('search-results');
+            container.innerHTML = stations.map(station => `
+                <div class="station-card" onclick="toggleStationSelection('${station.id}', '${station.name}')">
+                    <h4>${station.name}</h4>
+                    <div class="station-info">ID: ${station.id}</div>
+                    <div class="station-info">Страна: ${station.country}</div>
+                    <div class="stat-code">Код: ${station.code || 'Не указан'}</div>
+                </div>
+            `).join('');
+        }
+
+        // Переключить выбор станции
+        function toggleStationSelection(stationId, stationName) {
+            const index = selectedStations.findIndex(s => s.id === stationId);
+            
+            if (index === -1) {
+                selectedStations.push({ id: stationId, name: stationName });
+            } else {
+                selectedStations.splice(index, 1);
+            }
+            
+            displaySelectedStations();
+        }
+
+        // Отобразить выбранные станции
+        function displaySelectedStations() {
+            const container = document.getElementById('selected-stations');
+            const createButton = document.querySelector('#manual-grouping .btn-success[onclick="createGroup()"]');
+            
+            if (selectedStations.length === 0) {
+                container.innerHTML = '<p>Выберите станции для группировки</p>';
+                createButton.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = selectedStations.map(station => `
+                <div class="station-card selected">
+                    <h4>${station.name}</h4>
+                    <div class="station-info">ID: ${station.id}</div>
+                    <button class="btn btn-danger btn-sm" onclick="removeStation('${station.id}')">Убрать</button>
+                </div>
+            `).join('');
+            
+            createButton.style.display = 'block';
+        }
+
+        // Убрать станцию из выбора
+        function removeStation(stationId) {
+            selectedStations = selectedStations.filter(s => s.id !== stationId);
+            displaySelectedStations();
+        }
+
+        // Создать группу
+        async function createGroup() {
+            const groupName = document.getElementById('group-name').value.trim();
+            if (!groupName) {
+                showAlert('error', 'Введите название группы');
+                return;
+            }
+            
+            if (selectedStations.length === 0) {
+                showAlert('error', 'Выберите хотя бы одну станцию');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/stations/group/manual', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        station_ids: selectedStations.map(s => s.id),
+                        group_name: groupName
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', `Группа "${groupName}" успешно создана!`);
+                    selectedStations = [];
+                    document.getElementById('group-name').value = '';
+                    displaySelectedStations();
+                } else {
+                    showAlert('error', 'Ошибка создания группы: ' + data.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Ошибка создания группы: ' + error.message);
+    }
+        }
+
+        // Загрузить сопоставления
+        async function loadMappings() {
+            try {
+                showLoading('mappings');
+                
+                const response = await fetch('/api/stations/groups');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('mappings-list').innerHTML = `
+                        <h3>Группы станций (${data.data.length})</h3>
+                        <div class="station-grid">
+                            ${data.data.map(group => `
+                                <div class="station-card">
+                                    <h4>${group.attributes?.name || group.name}</h4>
+                                    <p>ID: ${group.id}</p>
+                                    <p>Активна: ${group.attributes?.is_active ? 'Да' : 'Нет'}</p>
+                                    <button class="btn btn-warning" onclick="editGroup(${group.id})">Редактировать</button>
+                                    <button class="btn btn-danger" onclick="deleteGroup(${group.id})">Удалить</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    showAlert('error', 'Ошибка загрузки групп: ' + data.message);
+                }
+            } catch (error) {
+                showAlert('error', 'Ошибка загрузки групп: ' + error.message);
+            } finally {
+                hideLoading('mappings');
+            }
+        }
+
+        // Запустить синхронизацию
+        async function runSync() {
+            const syncType = document.getElementById('sync-type').value;
+            const statusDiv = document.getElementById('sync-status');
+            
+            try {
+                statusDiv.innerHTML = '<p>🔄 Запуск синхронизации...</p>';
+                
+                let endpoint = '';
+                switch (syncType) {
+                    case 'api1':
+                        endpoint = '/api/sync/stations/api1';
+                        break;
+                    case 'api2':
+                        endpoint = '/api/sync/stations/api2';
+                        break;
+                    case 'mapping':
+                        endpoint = '/api/sync/stations/map';
+                        break;
+                    case 'full':
+                        endpoint = '/api/sync/full';
+                        break;
+                }
+                
+                const response = await fetch(endpoint, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusDiv.innerHTML = `
+                        <p>✅ Синхронизация завершена успешно!</p>
+                        <p>${data.message}</p>
+                        <p>⏰ Время: ${new Date().toLocaleString()}</p>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <p>❌ Ошибка синхронизации</p>
+                        <p>${data.message}</p>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <p>❌ Ошибка синхронизации</p>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        // Показать загрузку
+        function showLoading(tabId) {
+            const tab = document.getElementById(tabId);
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.id = 'loading-' + tabId;
+            loadingDiv.innerHTML = `
+                <div class="spinner"></div>
+                <p>Загрузка...</p>
+            `;
+            tab.appendChild(loadingDiv);
+        }
+
+        // Скрыть загрузку
+        function hideLoading(tabId) {
+            const loadingDiv = document.getElementById('loading-' + tabId);
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+
+        // Показать уведомление
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = message;
+            
+            document.querySelector('.content').insertBefore(alertDiv, document.querySelector('.content').firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+        });
+    </script>
+</body>
+</html>
