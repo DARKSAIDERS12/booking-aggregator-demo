@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Таблица 1: Населенные пункты из API 1
+model StationApi1 {
+  id        String   @id @default(cuid())
+  name      String   // Название станции
+  code      String?  // Код станции в API 1
+  region    String?  // Регион
+  country   String?  // Страна
+  latitude  Float?   // Широта
+  longitude Float?   // Долгота
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Обратная связь на сопоставления
+  mappings  StationMapping[]
+
+  @@map("stations_api1")
+}
+
+// Таблица 2: Населенные пункты из API 2
+model StationApi2 {
+  id        String   @id @default(cuid())
+  name      String   // Название станции
+  code      String?  // Код станции в API 2
+  region    String?  // Регион
+  country   String?  // Страна
+  latitude  Float?   // Широта
+  longitude Float?   // Долгота
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Обратная связь на сопоставления
+  mappings  StationMapping[]
+
+  @@map("stations_api2")
+}
+
+// Таблица 3: Сопоставленные населенные пункты
+model StationMapping {
+  id           String      @id @default(cuid())
+  api1StationId String     // ID станции из API 1
+  api2StationId String     // ID станции из API 2
+  groupId      String?     // ID группы для группировки
+  isMain       Boolean     @default(false) // Главная станция в группе
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Связи
+  api1Station  StationApi1 @relation(fields: [api1StationId], references: [id])
+  api2Station  StationApi2 @relation(fields: [api2StationId], references: [id])
+  group        StationGroup? @relation("GroupMappings", fields: [groupId], references: [id])
+  // Обратная сторона связи для главной станции группы
+  mainOfGroup  StationGroup? @relation("MainStation")
+
+  @@unique([api1StationId, api2StationId])
+  @@map("station_mappings")
+}
+
+// Группы станций
+model StationGroup {
+  id          String           @id @default(cuid())
+  name        String           // Название группы (например, "Холмск")
+  mainStationId String?        @unique // ID главной станции в группе
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Связи
+  mappings    StationMapping[] @relation("GroupMappings")
+  mainStation StationMapping?  @relation("MainStation", fields: [mainStationId], references: [id])
+
+  @@map("station_groups")
+}
+
+// Кэш для внешних API
+model ApiCache {
+  id        String   @id @default(cuid())
+  key       String   @unique // Ключ кэша
+  value     Json     // Данные кэша
+  expiresAt DateTime // Время истечения кэша
+  createdAt DateTime @default(now())
+
+  @@map("api_cache")
+}
