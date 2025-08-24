@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { Api1Service } from '../services/api1Service';
 import { RaceService } from '../services/raceService';
+import { Api2Service } from '../services/api2Service';
 
 class BookingController {
   private api1Service: Api1Service;
+  private api2Service: Api2Service;
   private raceService: RaceService;
 
   constructor() {
     this.api1Service = new Api1Service();
+    this.api2Service = new Api2Service();
     this.raceService = new RaceService();
     
     // Привязываем методы к контексту
@@ -181,7 +184,6 @@ class BookingController {
       
       // Тестируем Paybilet API 2
       const api2Test = await this.api2Service.testConnection();
-      };
 
       const result = {
         api1: {
