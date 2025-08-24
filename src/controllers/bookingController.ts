@@ -179,11 +179,8 @@ class BookingController {
       // Тестируем GDS API 1
       const api1Test = await this.api1Service.testConnection();
       
-      // API 2 пока не настроен
-      const api2Test = {
-        status: false,
-        responseTime: 0,
-        error: 'API 2 не настроен'
+      // Тестируем Paybilet API 2
+      const api2Test = await this.api2Service.testConnection();
       };
 
       const result = {
