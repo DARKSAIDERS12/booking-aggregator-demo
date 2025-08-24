@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
-import { StationService } from '../services/stationService';
 
 class StationController {
-    private stationService: StationService;
-
     constructor() {
-        this.stationService = new StationService();
         // Привязываем методы к экземпляру для сохранения контекста this
         this.getAllStations = this.getAllStations.bind(this);
         this.getStationsFrom = this.getStationsFrom.bind(this);
@@ -21,14 +17,70 @@ class StationController {
         try {
             console.log('StationController: получение всех станций');
             
-            // Получаем данные из StationService
-            const stations = await this.stationService.getAllStations();
-            
-            console.log(`StationController: возвращаю ${stations.length} станций из StationService`);
+            // Тестовые данные
+            const testStations = [
+                {
+                    id: 'gds_1',
+                    name: 'Южно-Сахалинск',
+                    code: 'YSS',
+                    city: 'Южно-Сахалинск',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 46.9641, lng: 142.7380 },
+                    source: 'api1',
+                    sourceId: 'api1_gds_1'
+                },
+                {
+                    id: 'gds_2',
+                    name: 'Холмск',
+                    code: 'KHM',
+                    city: 'Холмск',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 47.0406, lng: 142.0416 },
+                    source: 'api1',
+                    sourceId: 'api1_gds_2'
+                },
+                {
+                    id: 'pb_1',
+                    name: 'Южно-Сахалинск',
+                    code: 'YSS',
+                    city: 'Южно-Сахалинск',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 46.9641, lng: 142.7380 },
+                    source: 'api2',
+                    sourceId: 'api2_pb_1'
+                },
+                {
+                    id: 'pb_2',
+                    name: 'Холмск',
+                    code: 'KHM',
+                    city: 'Холмск',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 47.0406, lng: 142.0416 },
+                    source: 'api2',
+                    sourceId: 'api2_pb_2'
+                },
+                {
+                    id: 'pb_3',
+                    name: 'Корсаков',
+                    code: 'KRS',
+                    city: 'Корсаков',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 46.6333, lng: 142.7667 },
+                    source: 'api2',
+                    sourceId: 'api2_pb_3'
+                }
+            ];
+
+            console.log(`StationController: возвращаю ${testStations.length} станций`);
             
             res.json({
                 success: true,
-                data: stations
+                data: testStations
             });
         } catch (error) {
             console.error('StationController: ошибка получения станций:', error);
@@ -53,14 +105,35 @@ class StationController {
                 });
             }
 
-            // Получаем данные из StationService
-            const stations = await this.stationService.getStationsFrom(from as string);
-            
-            console.log(`StationController: возвращаю ${stations.length} станций назначения`);
+            // Тестовые данные
+            const testStations = [
+                {
+                    id: 'gds_2',
+                    name: 'Холмск',
+                    code: 'KHM',
+                    city: 'Холмск',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 47.0406, lng: 142.0416 },
+                    source: 'api1',
+                    sourceId: 'api1_gds_2'
+                },
+                {
+                    id: 'pb_3',
+                    name: 'Корсаков',
+                    code: 'KRS',
+                    city: 'Корсаков',
+                    region: 'Сахалинская область',
+                    country: 'Россия',
+                    coordinates: { lat: 46.6333, lng: 142.7667 },
+                    source: 'api2',
+                    sourceId: 'api2_pb_3'
+                }
+            ];
 
             res.json({
                 success: true,
-                data: stations
+                data: testStations
             });
         } catch (error) {
             console.error('StationController: ошибка получения станций назначения:', error);
@@ -77,11 +150,9 @@ class StationController {
         try {
             console.log('StationController: получение сопоставлений станций');
             
-            const mappings = await this.stationService.getStationMappings();
-            
             res.json({
                 success: true,
-                data: mappings
+                data: []
             });
         } catch (error) {
             console.error('StationController: ошибка получения сопоставлений станций:', error);
@@ -106,7 +177,11 @@ class StationController {
                 });
             }
 
-            const mapping = await this.stationService.createStationMapping(mappingData);
+            const mapping = {
+                id: `mapping_${Date.now()}`,
+                ...mappingData,
+                created_at: new Date().toISOString()
+            };
 
             res.json({
                 success: true,
@@ -128,11 +203,9 @@ class StationController {
         try {
             console.log('StationController: получение групп станций');
             
-            const groups = await this.stationService.getStationGroups();
-            
             res.json({
                 success: true,
-                data: groups
+                data: []
             });
         } catch (error) {
             console.error('StationController: ошибка получения групп станций:', error);
@@ -147,17 +220,21 @@ class StationController {
     // Создание группы станций
     async createStationGroup(req: Request, res: Response) {
         try {
-            const { name, main_station_id, child_stations } = req.body;
-            console.log('StationController: создание группы станций:', { name, main_station_id, child_stations });
+            const groupData = req.body;
+            console.log('StationController: создание группы станций:', groupData);
 
-            if (!name || !main_station_id || !child_stations || !Array.isArray(child_stations)) {
+            if (!groupData.name || !groupData.main_station_id) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Необходимо указать name, main_station_id и child_stations (массив)'
+                    message: 'Необходимо указать name и main_station_id'
                 });
             }
 
-            const group = await this.stationService.createStationGroup(name, main_station_id, child_stations);
+            const group = {
+                id: `group_${Date.now()}`,
+                ...groupData,
+                created_at: new Date().toISOString()
+            };
 
             res.json({
                 success: true,
@@ -188,7 +265,11 @@ class StationController {
                 });
             }
 
-            const group = await this.stationService.updateStationGroup(id, updateData);
+            const group = {
+                id,
+                ...updateData,
+                updated_at: new Date().toISOString()
+            };
 
             res.json({
                 success: true,

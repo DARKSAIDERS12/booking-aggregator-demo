@@ -27,7 +27,7 @@ export default class StrapiService {
         method,
         url: `${this.baseUrl}/api${endpoint}`,
         headers: {
-          'Authorization': `Bearer ${this.apiToken}`,
+          'Authorization': `Bearer ${process.env.STRAPI_API_TOKEN || this.apiToken || ''}`,
           'Content-Type': 'application/json'
         },
         data
@@ -103,7 +103,7 @@ export default class StrapiService {
 
   async getStationMappings(): Promise<any[]> {
     try {
-      const response = await this.makeRequest('GET', '/station-mappings');
+      const response = await this.makeRequest('GET', '/test3s');
       return response.data || [];
     } catch (error) {
       console.error('Ошибка получения сопоставлений станций:', error);
@@ -124,7 +124,9 @@ export default class StrapiService {
   // Методы для создания и обновления
   async createStationMapping(mappingData: any): Promise<any> {
     try {
-      const response = await this.makeRequest('POST', '/station-mappings', mappingData);
+      // Убираем поле id, так как Strapi сам его генерирует
+      const { id, ...dataWithoutId } = mappingData;
+      const response = await this.makeRequest('POST', '/test3s', { data: dataWithoutId });
       return response.data;
     } catch (error) {
       console.error('Ошибка создания сопоставления станций:', error);
@@ -132,10 +134,39 @@ export default class StrapiService {
     }
   }
 
+  async createManualStationMapping(api1StationId: string, api2StationId: string): Promise<any> {
+    try {
+      const mappingData = {
+        api1_station_id: api1StationId,
+        api2_station_id: api2StationId,
+        // created_date: new Date().toISOString()
+      };
+      return await this.createStationMapping(mappingData);
+    } catch (error) {
+      console.error('Ошибка создания ручного сопоставления:', error);
+      throw error;
+    }
+  }
+
   async createStationGroup(groupData: any): Promise<any> {
     try {
-      const response = await this.makeRequest('POST', '/station-groups', groupData);
+      const response = await this.makeRequest('POST', '/station-groups1s', groupData);
       return response.data;
+    } catch (error) {
+      console.error('Ошибка создания группы станций:', error);
+      throw error;
+    }
+  }
+
+  async createStationGroupWithData(name: string, mainStationId: string, childStationIds: string[]): Promise<any> {
+    try {
+      const groupData = {
+        name,
+        main_station_id: mainStationId,
+        child_stations: childStationIds,
+        // created_date: new Date().toISOString()
+      };
+      return await this.createStationGroup(groupData);
     } catch (error) {
       console.error('Ошибка создания группы станций:', error);
       throw error;

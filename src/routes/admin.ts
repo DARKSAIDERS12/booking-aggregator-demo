@@ -34,13 +34,13 @@ router.post("/stations/load-from-apis", (req, res) => adminController.loadStatio
 // POST /stations/auto-map - автоматическое сопоставление станций
 router.post("/stations/auto-map", (req, res) => adminController.autoMapStations(req, res));
 
-// POST /stations/manual-map - ручное сопоставление станций
-router.post("/stations/manual-map", (req, res) => adminController.manualMapStations(req, res));
+// POST /stations/mappings - ручное сопоставление станций
+router.post("/stations/mappings", (req, res) => adminController.createStationMapping(req, res));
 
-// POST /stations/group - создание группы станций
-router.post("/stations/group", (req, res) => adminController.createStationGroup(req, res));
+// POST /stations/groups - создание группы станций
+router.post("/stations/groups", (req, res) => adminController.createStationGroup(req, res));
 
-// GET /stations/mapped - получение сопоставленных станций с группировками
-router.get("/stations/mapped", (req, res) => adminController.getMappedStations(req, res));
+// GET /stations/mappings - получение сопоставлений станций
+router.get("/stations/mappings", (req, res) => adminController.getMappedStations(req, res));
 
 export { router as adminRoutes };

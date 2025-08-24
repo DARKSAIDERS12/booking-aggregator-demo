@@ -94,66 +94,58 @@ export class AdminController {
     }
   }
 
-  // POST /stations/manual-map - ручное сопоставление станций
-  async manualMapStations(req: Request, res: Response) {
+  // Ручное сопоставление станций
+  async createStationMapping(req: Request, res: Response) {
     try {
-      const { api1StationId, api2StationId } = req.body;
+      const { api1_station_id, api2_station_id } = req.body;
       
-      if (!api1StationId || !api2StationId) {
+      if (!api1_station_id || !api2_station_id) {
         return res.status(400).json({
           success: false,
-          error: "Необходимы ID станций из обоих API"
+          error: 'Необходимо указать api1_station_id и api2_station_id'
         });
       }
-
-      // Создаем сопоставление через StrapiService
-      const mapping = await this.stationService.createStationMapping({
-        api1_station_id: api1StationId,
-        api2_station_id: api2StationId,
-        display_name: 'Ручное сопоставление',
-        is_auto_mapped: false
-      });
+      
+      const mapping = await this.stationService.createManualStationMapping(api1_station_id, api2_station_id);
       
       res.json({
         success: true,
         data: mapping,
-        message: "Станции успешно сопоставлены"
+        message: 'Ручное сопоставление станций создано'
       });
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      console.error('Ошибка создания ручного сопоставления:', error);
+      res.status(400).json({
         success: false,
-        error: "Не удалось сопоставить станции"
+        error: error.message || 'Ошибка создания ручного сопоставления'
       });
     }
   }
 
-  // POST /stations/group - создание группы станций
+  // Создание группы станций
   async createStationGroup(req: Request, res: Response) {
     try {
-      const { name, stationIds } = req.body;
+      const { name, main_station_id, child_stations } = req.body;
       
-      if (!name || !stationIds || !Array.isArray(stationIds) || stationIds.length === 0) {
+      if (!name || !main_station_id || !child_stations || !Array.isArray(child_stations)) {
         return res.status(400).json({
           success: false,
-          error: "Необходимы название группы и массив ID станций"
+          error: 'Необходимо указать name, main_station_id и child_stations (массив)'
         });
       }
-
-      const group = await this.stationService.createStationGroup({
-        name,
-        main_station_id: stationIds[0],
-        child_stations: stationIds.slice(1)
-      });
+      
+      const group = await this.stationService.createStationGroup(name, main_station_id, child_stations);
       
       res.json({
         success: true,
         data: group,
-        message: "Группа станций успешно создана"
+        message: `Группа станций "${name}" создана`
       });
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      console.error('Ошибка создания группы станций:', error);
+      res.status(400).json({
         success: false,
-        error: "Не удалось создать группу станций"
+        error: error.message || 'Ошибка создания группы станций'
       });
     }
   }

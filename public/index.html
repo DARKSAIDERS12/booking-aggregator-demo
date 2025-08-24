@@ -116,17 +116,30 @@
         }
 
         .feature-card {
-            background: #f8f9fa;
+            background: white;
             border-radius: 15px;
             padding: 30px;
             text-align: center;
-            border-left: 5px solid #3498db;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-card:active {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 20px;
         }
 
         .feature-card h3 {
@@ -138,12 +151,24 @@
         .feature-card p {
             color: #7f8c8d;
             line-height: 1.6;
+            margin-bottom: 20px;
         }
 
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-            display: block;
+        .card-action {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .card-action {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .search-section {
@@ -204,20 +229,60 @@
         }
 
         .results {
-            background: white;
-            border-radius: 10px;
+            margin-top: 30px;
             padding: 20px;
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             display: none;
         }
-
-        .results pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
+        
+        .routes-list {
+            margin-top: 20px;
+        }
+        
+        .route-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .route-item h5 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .route-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        
+        .route-actions {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .status {
@@ -296,35 +361,41 @@
             </div>
 
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('race-search.html')">
                     <span class="feature-icon">🔍</span>
                     <h3>Поиск маршрутов</h3>
                     <p>Быстрый поиск маршрутов между любыми станциями с возможностью сравнения цен и времени</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('station-management.html')">
                     <span class="feature-icon">🚉</span>
                     <h3>Управление станциями</h3>
                     <p>Автоматическая группировка и сопоставление станций между различными API</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('api-test.html')">
                     <span class="feature-icon">📋</span>
                     <h3>Система заказов</h3>
                     <p>Полный цикл работы с заказами: регистрация, оплата, отмена</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('dashboard.html')">
                     <span class="feature-icon">🔄</span>
                     <h3>Синхронизация данных</h3>
                     <p>Автоматическое обновление данных из внешних API в реальном времени</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('dashboard.html')">
                     <span class="feature-icon">💚</span>
                     <h3>Мониторинг</h3>
                     <p>Отслеживание состояния системы и API соединений</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="navigateTo('station-management.html')">
                     <span class="feature-icon">⚙️</span>
                     <h3>Гибкая настройка</h3>
                     <p>Возможность ручного управления группировкой станций и сопоставлениями</p>
+                    <div class="card-action">Нажмите для перехода →</div>
                 </div>
             </div>
 
@@ -383,9 +454,27 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    // ИСПРАВЛЕНИЕ: данные в data.data (массив), а не в data.data.races
+                    const routes = Array.isArray(data.data) ? data.data : [];
                     document.getElementById('search-content').innerHTML = `
-                        <div class="status success">✅ Найдено ${data.data.routes.length} маршрутов</div>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <div class="status success">✅ Найдено ${routes.length} маршрутов</div>
+                        <div class="routes-list">
+                            ${routes.map(route => `
+                                <div class="route-item" onclick="selectRoute('${route.id}', '${route.from}', '${route.to}', '${route.departureTime}', '${route.price}', '${route.carrier}')" style="cursor: pointer;">
+                                    <h5>${route.from} → ${route.to}</h5>
+                                    <p><strong>Время:</strong> ${route.departureTime} - ${route.arrivalTime}</p>
+                                    <p><strong>Длительность:</strong> ${route.duration}</p>
+                                    <p><strong>Цена:</strong> ${route.price} ${route.currency}</p>
+                                    <p><strong>Перевозчик:</strong> ${route.carrier}</p>
+                                    <p><strong>Мест:</strong> ${route.availableSeats}</p>
+                                    <div class="route-actions">
+                                        <button class="btn btn-primary" onclick="event.stopPropagation(); selectRoute('${route.id}', '${route.from}', '${route.to}', '${route.departureTime}', '${route.price}', '${route.carrier}')">
+                                            🎫 Выбрать рейс
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     `;
                 } else {
                     document.getElementById('search-content').innerHTML = `
@@ -396,7 +485,6 @@
                 document.getElementById('search-content').innerHTML = `
                     <div class="status error">❌ Ошибка: ${error.message}</div>
                 `;
-                }
             } finally {
                 hideLoading();
             }
@@ -429,6 +517,30 @@
             setTimeout(() => {
                 statusDiv.remove();
             }, 5000);
+        }
+
+        // Навигация по карточкам
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+
+        // Выбор рейса
+        function selectRoute(id, from, to, departureTime, price, carrier) {
+            // Сохраняем выбранный рейс в localStorage
+            const selectedRoute = {
+                id,
+                from,
+                to,
+                departureTime,
+                price,
+                carrier,
+                selectedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('selectedRoute', JSON.stringify(selectedRoute));
+            
+            // Переходим на страницу заказа
+            window.location.href = '/booking.html';
         }
     </script>
 </body>

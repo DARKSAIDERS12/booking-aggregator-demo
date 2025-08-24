@@ -29,11 +29,11 @@ app.use((req, res, next) => {
 });
 
 // Маршруты
-app.use('/api', bookingRoutes);
+app.use('/api/stations', stationRoutes);  // ПЕРВЫЙ - более специфичный
 app.use('/api/orders', orderRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/races', raceRoutes);
-app.use('/api/stations', stationRoutes);
+app.use('/api', bookingRoutes);  // ПОСЛЕДНИЙ - менее специфичный
 app.use('/admin', adminRoutes);
 
 // Тестовый маршрут

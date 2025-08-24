@@ -16,6 +16,30 @@ class BookingController {
     this.getApiStats = this.getApiStats.bind(this);
   }
 
+  // Тестовый endpoint для проверки
+  async testDemo(req: Request, res: Response) {
+    try {
+      console.log('🧪 Тестовый endpoint вызван');
+      
+      const demoData = [
+        { id: 'test1', name: 'Тест 1' },
+        { id: 'test2', name: 'Тест 2' }
+      ];
+
+      res.json({
+        success: true,
+        message: 'Тестовый endpoint работает!',
+        data: demoData
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Ошибка тестового endpoint',
+        error: error instanceof Error ? error.message : 'Неизвестная ошибка'
+      });
+    }
+  }
+
   // Поиск маршрутов
   async searchRoutes(req: Request, res: Response) {
     try {
@@ -28,27 +52,62 @@ class BookingController {
         });
       }
 
-      console.log('🔍 Поиск маршрутов:', { from, to, date });
+      console.log('🔍 Поиск маршрутов (ДЕМО ВЕРСИЯ 2):', { from, to, date });
 
-      // Получаем данные из обоих API
-      const [api1Races, api2Races] = await Promise.allSettled([
-        this.api1Service.searchRaces({ from: from as string, to: to as string, date: date as string }),
-        Promise.resolve([]) // API 2 пока не настроен
-      ]);
-
-      const allRaces = [
-        ...(api1Races.status === 'fulfilled' ? api1Races.value : []),
-        ...(api2Races.status === 'fulfilled' ? api2Races.value : [])
+      // ДЕМО ДАННЫЕ для тестирования
+      const demoRaces = [
+        {
+          id: 'demo_001',
+          from: from as string,
+          to: to as string,
+          departureTime: `${date}T08:00:00.000Z`,
+          arrivalTime: `${date}T12:30:00.000Z`,
+          duration: '4ч 30м',
+          price: 1500,
+          currency: 'руб',
+          availableSeats: 25,
+          carrier: 'Сахалинавтотранс',
+          source: 'api1',
+          sourceId: 'gds_demo_001'
+        },
+        {
+          id: 'demo_002',
+          from: from as string,
+          to: to as string,
+          departureTime: `${date}T14:15:00.000Z`,
+          arrivalTime: `${date}T18:45:00.000Z`,
+          duration: '4ч 30м',
+          price: 1650,
+          currency: 'руб',
+          availableSeats: 12,
+          carrier: 'Островные перевозки',
+          source: 'api2',
+          sourceId: 'paybilet_demo_002'
+        },
+        {
+          id: 'demo_003',
+          from: from as string,
+          to: to as string,
+          departureTime: `${date}T16:30:00.000Z`,
+          arrivalTime: `${date}T21:00:00.000Z`,
+          duration: '4ч 30м',
+          price: 1400,
+          currency: 'руб',
+          availableSeats: 8,
+          carrier: 'Экспресс-Сахалин',
+          source: 'api1',
+          sourceId: 'gds_demo_003'
+        }
       ];
 
-      console.log(`✅ Найдено ${allRaces.length} маршрутов`);
+      console.log(`✅ Найдено ${demoRaces.length} демо-маршрутов`);
 
       res.json({
         success: true,
-        data: allRaces,
+        data: demoRaces,
         sources: {
-          api1: api1Races.status === 'fulfilled' ? 'success' : 'error',
-          api2: api2Races.status === 'fulfilled' ? 'success' : 'error'
+          api1: 'demo',
+          api2: 'demo'
         }
       });
     } catch (error) {

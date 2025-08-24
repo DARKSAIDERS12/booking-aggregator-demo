@@ -18,6 +18,9 @@ router.get('/routes/:id', bookingController.getRouteInfo);
 // Тест соединений
 router.get('/test/connections', bookingController.testConnections);
 
+// Тестовый endpoint
+router.get('/test/demo', bookingController.testDemo);
+
 // Получение статистики API
 router.get('/stats', bookingController.getApiStats);
 

@@ -115,3 +115,4 @@ tail -f /home/darksaiders/booking-aggregator/server.log
 **Версия:** 1.0.0  
 **Статус:** ✅ ЗАВЕРШЕНО
 
+

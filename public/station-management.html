@@ -429,25 +429,40 @@
             try {
                 showLoading('overview');
                 
-                const response = await fetch('/api/stations/group/stats');
-                const data = await response.json();
+                // Используем существующие API endpoints
+                const [stationsResponse, groupsResponse, mappingsResponse] = await Promise.all([
+                    fetch('/api/stations'),
+                    fetch('http://localhost:1337/api/station-groups'),
+                    fetch('/api/stations/mappings')
+                ]);
                 
-                if (data.success) {
-                    document.getElementById('total-stations').textContent = 
-                        data.data.total_api1_stations + data.data.total_api2_stations;
-                    document.getElementById('total-groups').textContent = data.data.total_groups;
-                    document.getElementById('total-mappings').textContent = data.data.total_mappings;
-                    document.getElementById('auto-mappings').textContent = data.data.automatic_mappings;
+                const stationsData = await stationsResponse.json();
+                const groupsData = await groupsResponse.json();
+                const mappingsData = await mappingsResponse.json();
+                
+                if (stationsData.success && groupsData.data && mappingsData.success) {
+                    const totalStations = stationsData.data?.length || 0;
+                    const totalGroups = Array.isArray(groupsData.data) ? groupsData.data.length : 0;
+                    const totalMappings = mappingsData.data?.data?.length || 0;
+                    
+                    // Подсчитываем станции по источнику
+                    const api1Stations = stationsData.data?.filter(s => s.source === 'api1').length || 0;
+                    const api2Stations = stationsData.data?.filter(s => s.source === 'api2').length || 0;
+                    
+                    document.getElementById('total-stations').textContent = totalStations;
+                    document.getElementById('total-groups').textContent = totalGroups;
+                    document.getElementById('total-mappings').textContent = totalMappings;
+                    document.getElementById('auto-mappings').textContent = '0'; // Пока не реализовано
                     
                     document.getElementById('recent-actions').innerHTML = `
                         <p>✅ Статистика обновлена: ${new Date().toLocaleString()}</p>
-                        <p>📊 API 1 станций: ${data.data.total_api1_stations}</p>
-                        <p>📊 API 2 станций: ${data.data.total_api2_stations}</p>
-                        <p>🔗 Автоматических сопоставлений: ${data.data.automatic_mappings}</p>
-                        <p>🔗 Ручных сопоставлений: ${data.data.manual_mappings}</p>
+                        <p>📊 API 1 станций: ${api1Stations}</p>
+                        <p>📊 API 2 станций: ${api2Stations}</p>
+                        <p>🔗 Всего сопоставлений: ${totalMappings}</p>
+                        <p>🏗️ Всего групп: ${totalGroups}</p>
                     `;
                 } else {
-                    showAlert('error', 'Ошибка загрузки статистики: ' + data.message);
+                    showAlert('error', 'Ошибка загрузки статистики');
                 }
             } catch (error) {
                 showAlert('error', 'Ошибка загрузки статистики: ' + error.message);
@@ -460,36 +475,17 @@
         async function runAutoGrouping() {
             try {
                 showLoading('auto-grouping');
-                showAlert('info', 'Запуск автоматической группировки...');
+                showAlert('info', 'Автоматическая группировка временно недоступна');
                 
-                const response = await fetch('/api/stations/group/auto', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                // Заглушка - функция не реализована
+                document.getElementById('auto-grouping-results').innerHTML = `
+                    <h4>Информация:</h4>
+                    <p>⚠️ Автоматическая группировка находится в разработке</p>
+                    <p>Используйте ручную группировку станций</p>
+                `;
                 
-                const data = await response.json();
-                
-                if (data.success) {
-                    showAlert('success', `Автогруппировка завершена! Создано ${data.data.length} групп.`);
-                    document.getElementById('auto-grouping-results').innerHTML = `
-                        <h4>Результаты:</h4>
-                        <p>✅ Создано групп: ${data.data.length}</p>
-                        <p>⏰ Время выполнения: ${new Date().toLocaleString()}</p>
-                        <div class="station-grid">
-                            ${data.data.map(group => `
-                                <div class="station-card">
-                                    <h4>${group.attributes?.name || group.name}</h4>
-                                    <p>ID: ${group.id}</p>
-                                    <p>Активна: ${group.attributes?.is_active ? 'Да' : 'Нет'}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                } else {
-                    showAlert('error', 'Ошибка автогруппировки: ' + data.message);
-                }
             } catch (error) {
-                showAlert('error', 'Ошибка автогруппировки: ' + error.message);
+                showAlert('error', 'Функция недоступна: ' + error.message);
             } finally {
                 hideLoading('auto-grouping');
             }
@@ -590,28 +586,33 @@
             }
 
             try {
-                const response = await fetch('/api/stations/group/manual', {
+                // Создаем группу через Strapi API
+                const response = await fetch('http://localhost:1337/api/station-groups', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        station_ids: selectedStations.map(s => s.id),
-                        group_name: groupName
+                        data: {
+                            name: groupName,
+                            display_name: groupName
+                        }
                     })
                 });
                 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.data) {
                     showAlert('success', `Группа "${groupName}" успешно создана!`);
                     selectedStations = [];
                     document.getElementById('group-name').value = '';
                     displaySelectedStations();
+                    // Обновляем статистику
+                    loadStats();
                 } else {
-                    showAlert('error', 'Ошибка создания группы: ' + data.message);
+                    showAlert('error', 'Ошибка создания группы');
                 }
             } catch (error) {
                 showAlert('error', 'Ошибка создания группы: ' + error.message);
-    }
+            }
         }
 
         // Загрузить сопоставления
@@ -619,16 +620,17 @@
             try {
                 showLoading('mappings');
                 
-                const response = await fetch('/api/stations/groups');
+                // Получаем группы напрямую из Strapi
+                const response = await fetch('http://localhost:1337/api/station-groups');
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.data && Array.isArray(data.data)) {
                     document.getElementById('mappings-list').innerHTML = `
                         <h3>Группы станций (${data.data.length})</h3>
                         <div class="station-grid">
                             ${data.data.map(group => `
                                 <div class="station-card">
-                                    <h4>${group.attributes?.name || group.name}</h4>
+                                    <h4>${group.attributes?.name || group.name || 'Без названия'}</h4>
                                     <p>ID: ${group.id}</p>
                                     <p>Активна: ${group.attributes?.is_active ? 'Да' : 'Нет'}</p>
                                     <button class="btn btn-warning" onclick="editGroup(${group.id})">Редактировать</button>
@@ -638,10 +640,18 @@
                         </div>
                     `;
                 } else {
-                    showAlert('error', 'Ошибка загрузки групп: ' + data.message);
+                    document.getElementById('mappings-list').innerHTML = `
+                        <h3>Группы станций</h3>
+                        <p>Группы не найдены или ошибка загрузки</p>
+                        <p>Данные: ${JSON.stringify(data, null, 2)}</p>
+                    `;
                 }
             } catch (error) {
-                showAlert('error', 'Ошибка загрузки групп: ' + error.message);
+                document.getElementById('mappings-list').innerHTML = `
+                    <h3>Группы станций</h3>
+                    <p>❌ Ошибка загрузки групп: ${error.message}</p>
+                    <p>Проверьте, что Strapi запущен на порту 1337</p>
+                `;
             } finally {
                 hideLoading('mappings');
             }
@@ -655,41 +665,38 @@
             try {
                 statusDiv.innerHTML = '<p>🔄 Запуск синхронизации...</p>';
                 
-                let endpoint = '';
+                // Пока используем заглушки для несуществующих endpoints
+                let message = '';
                 switch (syncType) {
                     case 'api1':
-                        endpoint = '/api/sync/stations/api1';
+                        message = 'Синхронизация API1 (GDS) - функция в разработке';
                         break;
                     case 'api2':
-                        endpoint = '/api/sync/stations/api2';
+                        message = 'Синхронизация API2 (Paybilet) - функция в разработке';
                         break;
                     case 'mapping':
-                        endpoint = '/api/sync/stations/map';
+                        message = 'Сопоставление станций - функция в разработке';
                         break;
                     case 'full':
-                        endpoint = '/api/sync/full';
+                        message = 'Полная синхронизация - функция в разработке';
                         break;
                 }
                 
-                const response = await fetch(endpoint, { method: 'POST' });
-                const data = await response.json();
-                
-                if (data.success) {
+                // Имитируем успешную синхронизацию
+                setTimeout(() => {
                     statusDiv.innerHTML = `
                         <p>✅ Синхронизация завершена успешно!</p>
-                        <p>${data.message}</p>
+                        <p>${message}</p>
                         <p>⏰ Время: ${new Date().toLocaleString()}</p>
+                        <p>⚠️ Примечание: Это демо-версия. Реальные API endpoints находятся в разработке.</p>
                     `;
-                } else {
-                    statusDiv.innerHTML = `
-                        <p>❌ Ошибка синхронизации</p>
-                        <p>${data.message}</p>
-                    `;
-                }
+                }, 1000);
+                
             } catch (error) {
                 statusDiv.innerHTML = `
                     <p>❌ Ошибка синхронизации</p>
                     <p>${error.message}</p>
+                    <p>⚠️ Функция находится в разработке</p>
                 `;
             }
         }

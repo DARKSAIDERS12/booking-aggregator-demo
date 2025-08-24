@@ -81,12 +81,16 @@ export class Api1Service {
       
       // Получаем страны и регионы для поиска станций
       const countries = await this.getCountries();
+      console.log(`🌍 Найдено ${countries.length} стран`);
+      
       const russia = countries.find(c => c.code === 'RU');
       
       if (!russia) {
         console.log('⚠️ Россия не найдена в списке стран');
-        return this.getMockStations();
+        return [];
       }
+      
+      console.log(`🇷🇺 Найдена Россия с ID: ${russia.id}`);
       
       // Получаем регионы России
       const regions = await this.getRegions(russia.id);
@@ -94,23 +98,32 @@ export class Api1Service {
       
       const allStations = [];
       
-      // Получаем станции для каждого региона
-      for (const region of regions.slice(0, 5)) { // Ограничиваем первыми 5 регионами
+      // Получаем станции для каждого региона (ограничиваем первыми 3 для тестирования)
+      for (const region of regions.slice(0, 3)) {
         try {
+          console.log(`🔍 Получение станций для региона: ${region.name} (ID: ${region.id})`);
           const stations = await this.getDispatchPoints(region.id);
+          console.log(`✅ Для региона ${region.name} получено ${stations.length} станций`);
           allStations.push(...stations);
         } catch (error) {
           console.log(`⚠️ Ошибка получения станций для региона ${region.name}:`, error instanceof Error ? error.message : 'Неизвестная ошибка');
         }
       }
       
-      console.log(`✅ Получено ${allStations.length} станций из GDS API`);
+      console.log(`✅ Всего получено ${allStations.length} станций из GDS API`);
+      
+      // Если не получили станций, возвращаем тестовые данные
+      if (allStations.length === 0) {
+        console.log('⚠️ Не удалось получить станции из GDS API, используем тестовые данные');
+        return [];
+      }
+      
       return allStations;
       
     } catch (error) {
       console.error('❌ Ошибка получения станций из GDS API:', error);
       console.log('🔄 Возвращаем тестовые данные');
-      return this.getMockStations();
+      return [];
     }
   }
 
@@ -147,11 +160,26 @@ export class Api1Service {
    */
   async getDispatchPoints(regionId: number): Promise<any[]> {
     try {
+      console.log(`🔍 Запрос станций для региона ID: ${regionId}`);
       const client = await this.getSoapClient();
       const result = await client.getDispatchPointsAsync({ regionId });
-      const stations = JSON.parse(result[0].return);
       
-      return stations.map((station: any) => ({
+      console.log(`📡 Ответ от GDS API для региона ${regionId}:`, result[0]?.return ? 'получен' : 'пустой');
+      
+      if (!result[0]?.return) {
+        console.log(`⚠️ Пустой ответ для региона ${regionId}`);
+        return [];
+      }
+      
+      const stations = JSON.parse(result[0].return);
+      console.log(`📍 Получено ${stations.length} станций для региона ${regionId}`);
+      
+      if (!Array.isArray(stations)) {
+        console.log(`⚠️ Ответ не является массивом для региона ${regionId}:`, typeof stations);
+        return [];
+      }
+      
+      const mappedStations = stations.map((station: any) => ({
         id: `gds_${station.id}`,
         name: station.name,
         code: station.code || station.id,
@@ -165,8 +193,12 @@ export class Api1Service {
         source: 'api1',
         sourceId: `api1_${station.id}`
       }));
+      
+      console.log(`✅ Успешно обработано ${mappedStations.length} станций для региона ${regionId}`);
+      return mappedStations;
+      
     } catch (error) {
-      console.error('❌ Ошибка получения станций отправления:', error);
+      console.error(`❌ Ошибка получения станций отправления для региона ${regionId}:`, error);
       return [];
     }
   }
@@ -206,7 +238,7 @@ export class Api1Service {
       
     } catch (error) {
       console.error('❌ Ошибка поиска рейсов в GDS API:', error);
-      console.log('🔄 Возвращаем тестовые данные');
+      return [];
       return this.getMockRaces(params);
     }
   }
@@ -238,7 +270,7 @@ export class Api1Service {
       
     } catch (error) {
       console.error('❌ Ошибка получения информации о рейсе из GDS API:', error);
-      console.log('🔄 Возвращаем тестовые данные');
+      return null;
       return this.getMockRaceInfo(raceId);
     }
   }
