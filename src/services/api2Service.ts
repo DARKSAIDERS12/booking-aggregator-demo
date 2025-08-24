@@ -134,39 +134,56 @@ export class Api2Service {
       let response;
       
       try {
-        // Вариант 1: API Key заголовок
+        // Вариант 1: Bearer токен
         response = await axios.get(`${this.baseUrl}/stations`, {
           headers: {
-            'X-API-Key': this.apiKey,
+            'Authorization': `Bearer ${this.apiKey}`,
             'Content-Type': 'application/json'
           },
           timeout: 10000
         });
-        console.log('✅ Успешно с X-API-Key заголовком');
+        console.log('✅ Успешно с Bearer токеном');
       } catch (error1: any) {
-        console.log('❌ X-API-Key не сработал, пробуем Authorization...');
+        console.log('❌ Bearer токен не сработал:', error1.response?.status, error1.response?.data);
+        console.log('Пробуем X-API-Key...');
         
         try {
-          // Вариант 2: Authorization заголовок
+          // Вариант 2: API Key заголовок
           response = await axios.get(`${this.baseUrl}/stations`, {
             headers: {
-              'Authorization': this.apiKey,
+              'X-API-Key': this.apiKey,
               'Content-Type': 'application/json'
             },
             timeout: 10000
           });
-          console.log('✅ Успешно с Authorization заголовком');
+          console.log('✅ Успешно с X-API-Key заголовком');
         } catch (error2: any) {
-          console.log('❌ Authorization не сработал, пробуем query параметр...');
+          console.log('❌ X-API-Key не сработал:', error2.response?.status, error2.response?.data);
+          console.log('Пробуем Authorization...');
           
-          // Вариант 3: Query параметр
-          response = await axios.get(`${this.baseUrl}/stations?api_key=${this.apiKey}`, {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            timeout: 10000
-          });
-          console.log('✅ Успешно с query параметром api_key');
+          try {
+            // Вариант 3: Authorization заголовок
+            response = await axios.get(`${this.baseUrl}/stations`, {
+              headers: {
+                'Authorization': this.apiKey,
+                'Content-Type': 'application/json'
+              },
+              timeout: 10000
+            });
+            console.log('✅ Успешно с Authorization заголовком');
+          } catch (error3: any) {
+            console.log('❌ Authorization не сработал:', error3.response?.status, error3.response?.data);
+            console.log('Пробуем query параметр...');
+            
+            // Вариант 4: Query параметр
+            response = await axios.get(`${this.baseUrl}/stations?api_key=${this.apiKey}`, {
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              timeout: 10000
+            });
+            console.log('✅ Успешно с query параметром api_key');
+          }
         }
       }
       
