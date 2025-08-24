@@ -27,7 +27,7 @@ export class Api2Service {
       // Реальный API вызов к Paybilet
       const response = await axios.get(`${this.baseUrl}/races`, {
         headers: {
-          'Authorization': this.apiKey,
+          'x-access-token': this.apiKey,
           'Content-Type': 'application/json'
         },
         params: {
@@ -64,7 +64,7 @@ export class Api2Service {
 
       const response = await axios.get(`${this.baseUrl}/races/${raceId}`, {
         headers: {
-          'Authorization': this.apiKey,
+          'x-access-token': this.apiKey,
           'Content-Type': 'application/json'
         },
         timeout: 10000
@@ -94,7 +94,7 @@ export class Api2Service {
 
           const response = await axios.get(`${this.baseUrl}/stations`, {
             headers: {
-              'Authorization': this.apiKey,
+              'x-access-token': this.apiKey,
               'Content-Type': 'application/json'
             },
             timeout: 10000
@@ -133,59 +133,15 @@ export class Api2Service {
       // Тестируем соединение с Paybilet API - пробуем разные форматы авторизации
       let response;
       
-      try {
-        // Вариант 1: Bearer токен
-        response = await axios.get(`${this.baseUrl}/stations`, {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 10000
-        });
-        console.log('✅ Успешно с Bearer токеном');
-      } catch (error1: any) {
-        console.log('❌ Bearer токен не сработал:', error1.response?.status, error1.response?.data);
-        console.log('Пробуем X-API-Key...');
-        
-        try {
-          // Вариант 2: API Key заголовок
-          response = await axios.get(`${this.baseUrl}/stations`, {
-            headers: {
-              'X-API-Key': this.apiKey,
-              'Content-Type': 'application/json'
-            },
-            timeout: 10000
-          });
-          console.log('✅ Успешно с X-API-Key заголовком');
-        } catch (error2: any) {
-          console.log('❌ X-API-Key не сработал:', error2.response?.status, error2.response?.data);
-          console.log('Пробуем Authorization...');
-          
-          try {
-            // Вариант 3: Authorization заголовок
-            response = await axios.get(`${this.baseUrl}/stations`, {
-              headers: {
-                'Authorization': this.apiKey,
-                'Content-Type': 'application/json'
-              },
-              timeout: 10000
-            });
-            console.log('✅ Успешно с Authorization заголовком');
-          } catch (error3: any) {
-            console.log('❌ Authorization не сработал:', error3.response?.status, error3.response?.data);
-            console.log('Пробуем query параметр...');
-            
-            // Вариант 4: Query параметр
-            response = await axios.get(`${this.baseUrl}/stations?api_key=${this.apiKey}`, {
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              timeout: 10000
-            });
-            console.log('✅ Успешно с query параметром api_key');
-          }
-        }
-      }
+      // Используем правильный заголовок x-access-token, как в Postman
+      response = await axios.get(`${this.baseUrl}/stations`, {
+        headers: {
+          'x-access-token': this.apiKey,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+      console.log('✅ Успешно с x-access-token заголовком');
       
       const responseTime = Date.now() - startTime;
       
