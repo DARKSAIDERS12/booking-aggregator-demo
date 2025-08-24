@@ -5,7 +5,7 @@ export class Api2Service {
   private apiKey: string;
 
   constructor() {
-    this.baseUrl = process.env.API2_BASE_URL || 'https://api.paybilet.ru';
+    this.baseUrl = process.env.API2_BASE_URL || 'http://vl.rfbus.net:8086';
     this.apiKey = process.env.API2_API_KEY || '';
   }
 
@@ -22,7 +22,7 @@ export class Api2Service {
       // Реальный API вызов к Paybilet
       const response = await axios.get(`${this.baseUrl}/races`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': this.apiKey,
           'Content-Type': 'application/json'
         },
         params: {
@@ -59,7 +59,7 @@ export class Api2Service {
 
       const response = await axios.get(`${this.baseUrl}/races/${raceId}`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': this.apiKey,
           'Content-Type': 'application/json'
         },
         timeout: 10000
@@ -77,23 +77,23 @@ export class Api2Service {
     }
   }
 
-  // Получение станций
-  async getStations(): Promise<any[]> {
-    try {
-      console.log('🔍 Получение станций из Paybilet API');
-      
-      if (!this.apiKey) {
-        console.log('⚠️ API ключ Paybilet не настроен');
-        return [];
-      }
+        // Получение станций
+      async getStations(): Promise<any[]> {
+        try {
+          console.log('🔍 Получение станций из Paybilet API');
+          
+          if (!this.apiKey) {
+            console.log('⚠️ API ключ Paybilet не настроен');
+            return [];
+          }
 
-      const response = await axios.get(`${this.baseUrl}/stations`, {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        timeout: 10000
-      });
+          const response = await axios.get(`${this.baseUrl}/stations`, {
+            headers: {
+              'Authorization': this.apiKey,
+              'Content-Type': 'application/json'
+            },
+            timeout: 10000
+          });
 
       if (response.data && response.data.success) {
         console.log(`✅ Получено ${response.data.data?.length || 0} станций из Paybilet API`);
@@ -126,7 +126,7 @@ export class Api2Service {
       // Тестируем соединение с Paybilet API
       const response = await axios.get(`${this.baseUrl}/stations`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': this.apiKey,
           'Content-Type': 'application/json'
         },
         timeout: 10000
