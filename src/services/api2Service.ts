@@ -7,6 +7,11 @@ export class Api2Service {
   constructor() {
     this.baseUrl = process.env.API2_BASE_URL || 'http://vl.rfbus.net:8086';
     this.apiKey = process.env.API2_API_KEY || '';
+    
+    console.log('🔧 Api2Service инициализирован с настройками:', {
+      baseUrl: this.baseUrl,
+      apiKey: this.apiKey ? `${this.apiKey.substring(0, 20)}...` : 'не настроен'
+    });
   }
 
   // Поиск рейсов
@@ -112,6 +117,8 @@ export class Api2Service {
   async testConnection(): Promise<{ status: boolean; responseTime: number; error?: string }> {
     try {
       console.log('🔌 Тест соединения с Paybilet API...');
+      console.log('📍 URL:', this.baseUrl);
+      console.log('🔑 API Key:', this.apiKey ? `${this.apiKey.substring(0, 20)}...` : 'не настроен');
       
       if (!this.apiKey) {
         return { status: false, responseTime: 0, error: 'API ключ не настроен' };
@@ -144,6 +151,10 @@ export class Api2Service {
     } catch (error: any) {
       const responseTime = 0;
       console.error('❌ Ошибка соединения с Paybilet API:', error.message);
+      if (error.response) {
+        console.error('📊 Статус ответа:', error.response.status);
+        console.error('📄 Данные ответа:', error.response.data);
+      }
       return { 
         status: false, 
         responseTime, 
