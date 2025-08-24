@@ -8,9 +8,9 @@ export class Api1Service {
   private client: any = null;
 
   constructor() {
-    this.baseUrl = process.env.GDS_API1_URL || 'https://cluster.avtovokzal.ru/gdstest/soap/json';
-    this.username = process.env.GDS_API1_USERNAME || 'sakhbus';
-    this.password = process.env.GDS_API1_PASSWORD || 'Zxvghh4567!';
+    this.baseUrl = process.env.API1_WSDL_URL || 'https://cluster.avtovokzal.ru/gdstest/soap/json';
+    this.username = process.env.API1_USERNAME || 'sakhbus';
+    this.password = process.env.API1_PASSWORD || 'Zxvghh4567!';
     
     console.log('🔧 Api1Service инициализирован с настройками:', {
       url: this.baseUrl,
@@ -239,7 +239,7 @@ export class Api1Service {
     } catch (error) {
       console.error('❌ Ошибка поиска рейсов в GDS API:', error);
       return [];
-      return this.getMockRaces(params);
+      return [];
     }
   }
 

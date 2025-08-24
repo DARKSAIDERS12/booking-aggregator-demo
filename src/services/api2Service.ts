@@ -5,190 +5,150 @@ export class Api2Service {
   private apiKey: string;
 
   constructor() {
-    this.baseUrl = process.env.API2_BASE_URL || 'https://api2.example.com';
+    this.baseUrl = process.env.API2_BASE_URL || 'https://api.paybilet.ru';
     this.apiKey = process.env.API2_API_KEY || '';
   }
 
   // Поиск рейсов
   async searchRaces(params: { from: string; to: string; date: string }): Promise<any[]> {
     try {
-      console.log('Поиск рейсов в API 2:', params);
+      console.log('🔍 Поиск рейсов в Paybilet API:', params);
       
-      // Здесь должна быть логика отправки REST запроса к Paybilet API
-      // Пока возвращаем тестовые данные
-      const mockRaces = [
-        {
-          id: `paybilet_${Date.now()}_1`,
+      if (!this.apiKey) {
+        console.log('⚠️ API ключ Paybilet не настроен');
+        return [];
+      }
+
+      // Реальный API вызов к Paybilet
+      const response = await axios.get(`${this.baseUrl}/races`, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
           from: params.from,
           to: params.to,
-          departureTime: `${params.date}T09:00:00`,
-          arrivalTime: `${params.date}T11:15:00`,
-          duration: '2ч 15м',
-          price: 1150,
-          currency: 'RUB',
-          availableSeats: 12,
-          carrier: 'Paybilet RF Bus'
-        }
-      ];
+          date: params.date
+        },
+        timeout: 10000
+      });
 
-      return mockRaces;
-    } catch (error) {
-      console.error('Ошибка поиска рейсов в API 2:', error);
-      throw error;
+      if (response.data && response.data.success) {
+        console.log(`✅ Найдено ${response.data.data?.length || 0} рейсов в Paybilet API`);
+        return response.data.data || [];
+      }
+
+      console.log('⚠️ Paybilet API вернул пустой ответ');
+      return [];
+      
+    } catch (error: any) {
+      console.error('❌ Ошибка поиска рейсов в Paybilet API:', error.message);
+      return [];
     }
   }
 
   // Получение информации о рейсе
   async getRaceInfo(raceId: string): Promise<any> {
     try {
-      console.log('Получение информации о рейсе из API 2:', raceId);
+      console.log('🔍 Получение информации о рейсе из Paybilet API:', raceId);
       
-      return {
-        id: raceId,
-        from: 'Южно-Сахалинск',
-        to: 'Холмск',
-        departureTime: '2025-08-22T09:00:00',
-        arrivalTime: '2025-08-22T11:15:00',
-        duration: '2ч 15м',
-        price: 1150,
-        currency: 'RUB',
-        availableSeats: 12,
-        carrier: 'Paybilet RF Bus'
-      };
-    } catch (error) {
-      console.error('Ошибка получения информации о рейсе из API 2:', error);
-      throw error;
-    }
-  }
+      if (!this.apiKey) {
+        console.log('⚠️ API ключ Paybilet не настроен');
+        return null;
+      }
 
-  // Получение всех рейсов
-  async getAllRaces(): Promise<any[]> {
-    try {
-      console.log('Получение всех рейсов из API 2');
+      const response = await axios.get(`${this.baseUrl}/races/${raceId}`, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+
+      if (response.data && response.data.success) {
+        return response.data.data;
+      }
+
+      return null;
       
-      return [
-        {
-          id: 'paybilet_1',
-          from: 'Южно-Сахалинск',
-          to: 'Холмск',
-          departureTime: '2025-08-22T09:00:00',
-          arrivalTime: '2025-08-22T11:15:00',
-          duration: '2ч 15м',
-          price: 1150,
-          currency: 'RUB',
-          availableSeats: 12,
-          carrier: 'Paybilet RF Bus'
-        }
-      ];
-    } catch (error) {
-      console.error('Ошибка получения всех рейсов из API 2:', error);
-      throw error;
+    } catch (error: any) {
+      console.error('❌ Ошибка получения информации о рейсе из Paybilet API:', error.message);
+      return null;
     }
   }
 
   // Получение станций
   async getStations(): Promise<any[]> {
     try {
-      console.log('Получение станций из API 2');
+      console.log('🔍 Получение станций из Paybilet API');
       
-      // Тестовые данные для Paybilet API
-      return [
-        {
-          id: 'pb_1',
-          name: 'Южно-Сахалинск',
-          code: 'YSS',
-          city: 'Южно-Сахалинск',
-          region: 'Сахалинская область',
-          country: 'Россия',
-          coordinates: { lat: 46.9641, lng: 142.7380 }
-        },
-        {
-          id: 'pb_2',
-          name: 'Холмск',
-          code: 'KHM',
-          city: 'Холмск',
-          region: 'Сахалинская область',
-          country: 'Россия',
-          coordinates: { lat: 47.0406, lng: 142.0416 }
-        },
-        {
-          id: 'pb_3',
-          name: 'Корсаков',
-          code: 'KRS',
-          city: 'Корсаков',
-          region: 'Сахалинская область',
-          country: 'Россия',
-          coordinates: { lat: 46.6333, lng: 142.7667 }
-        },
-        {
-          id: 'pb_4',
-          name: 'Невельск',
-          code: 'NVL',
-          city: 'Невельск',
-          region: 'Сахалинская область',
-          country: 'Россия',
-          coordinates: { lat: 46.6833, lng: 141.8667 }
-        },
-        {
-          id: 'pb_5',
-          name: 'Долинск',
-          code: 'DLS',
-          city: 'Долинск',
-          region: 'Сахалинская область',
-          country: 'Россия',
-          coordinates: { lat: 47.3333, lng: 142.8000 }
-        }
-      ];
-    } catch (error) {
-      console.error('Ошибка получения станций из API 2:', error);
-      return [];
-    }
-  }
+      if (!this.apiKey) {
+        console.log('⚠️ API ключ Paybilet не настроен');
+        return [];
+      }
 
-  // Получение станций назначения
-  async getStationsFrom(fromStationId: string): Promise<any[]> {
-    try {
-      console.log('Получение станций назначения из API 2 для станции:', fromStationId);
+      const response = await axios.get(`${this.baseUrl}/stations`, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+
+      if (response.data && response.data.success) {
+        console.log(`✅ Получено ${response.data.data?.length || 0} станций из Paybilet API`);
+        return response.data.data || [];
+      }
+
+      return [];
       
-      // Тестовые данные - возвращаем все станции кроме отправления
-      const allStations = await this.getStations();
-      return allStations.filter(station => station.id !== fromStationId);
-    } catch (error) {
-      console.error('Ошибка получения станций назначения из API 2:', error);
+    } catch (error: any) {
+      console.error('❌ Ошибка получения станций из Paybilet API:', error.message);
       return [];
-    }
-  }
-
-  // Поиск маршрутов
-  async searchRoutes(params: any): Promise<any[]> {
-    try {
-      console.log('Поиск маршрутов в API 2:', params);
-      return [];
-    } catch (error) {
-      console.error('Ошибка поиска маршрутов в API 2:', error);
-      return [];
-    }
-  }
-
-  // Получение информации о маршруте
-  async getRouteInfo(routeId: string): Promise<any> {
-    try {
-      console.log('Получение информации о маршруте из API 2:', routeId);
-      return null;
-    } catch (error) {
-      console.error('Ошибка получения информации о маршруте из API 2:', error);
-      return null;
     }
   }
 
   // Тест соединения
-  async testConnection(): Promise<boolean> {
+  async testConnection(): Promise<{ status: boolean; responseTime: number; error?: string }> {
     try {
-      console.log('Тест соединения с API 2');
-      return true;
-    } catch (error) {
-      console.error('Ошибка теста соединения с API 2:', error);
-      return false;
+      console.log('🔌 Тест соединения с Paybilet API...');
+      
+      if (!this.apiKey) {
+        return { status: false, responseTime: 0, error: 'API ключ не настроен' };
+      }
+      
+      if (!this.baseUrl) {
+        return { status: false, responseTime: 0, error: 'Base URL не настроен' };
+      }
+      
+      const startTime = Date.now();
+      
+      // Тестируем соединение с Paybilet API
+      const response = await axios.get(`${this.baseUrl}/stations`, {
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000
+      });
+      
+      const responseTime = Date.now() - startTime;
+      
+      if (response.status === 200) {
+        console.log('✅ Соединение с Paybilet API успешно');
+        return { status: true, responseTime };
+      } else {
+        return { status: false, responseTime, error: `HTTP ${response.status}` };
+      }
+      
+    } catch (error: any) {
+      const responseTime = 0;
+      console.error('❌ Ошибка соединения с Paybilet API:', error.message);
+      return { 
+        status: false, 
+        responseTime, 
+        error: error.message || 'Неизвестная ошибка' 
+      };
     }
   }
 }

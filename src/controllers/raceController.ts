@@ -27,53 +27,14 @@ class RaceController {
 
             console.log('🔍 Поиск рейсов (ДЕМО):', { from, to, date });
 
-            // ДЕМО ДАННЫЕ для тестирования
-            const demoRaces = [
-                {
-                    id: 'demo_001',
-                    from: from as string,
-                    to: to as string,
-                    departureTime: `${date}T08:00:00.000Z`,
-                    arrivalTime: `${date}T12:30:00.000Z`,
-                    duration: '4ч 30м',
-                    price: 1500,
-                    currency: 'руб',
-                    availableSeats: 25,
-                    carrier: 'Сахалинавтотранс',
-                    source: 'api1',
-                    sourceId: 'gds_demo_001'
-                },
-                {
-                    id: 'demo_002',
-                    from: from as string,
-                    to: to as string,
-                    departureTime: `${date}T14:15:00.000Z`,
-                    arrivalTime: `${date}T18:45:00.000Z`,
-                    duration: '4ч 30м',
-                    price: 1650,
-                    currency: 'руб',
-                    availableSeats: 12,
-                    carrier: 'Островные перевозки',
-                    source: 'api2',
-                    sourceId: 'paybilet_demo_002'
-                },
-                {
-                    id: 'demo_003',
-                    from: from as string,
-                    to: to as string,
-                    departureTime: `${date}T16:30:00.000Z`,
-                    arrivalTime: `${date}T21:00:00.000Z`,
-                    duration: '4ч 30м',
-                    price: 1400,
-                    currency: 'руб',
-                    availableSeats: 8,
-                    carrier: 'Экспресс-Сахалин',
-                    source: 'api1',
-                    sourceId: 'gds_demo_003'
-                }
-            ];
+            // Используем реальный raceService
+            const races = await this.raceService.searchRaces({
+              from: from as string,
+              to: to as string,
+              date: date as string
+            });
 
-            console.log(`✅ Возвращаю ${demoRaces.length} демо-рейсов`);
+            console.log(`✅ Найдено ${races.length} реальных рейсов`);
 
             res.json({
                 success: true,
@@ -81,7 +42,7 @@ class RaceController {
                     from,
                     to,
                     date,
-                    races: demoRaces
+                    races: races
                 }
             });
         } catch (error) {
