@@ -219,11 +219,12 @@ class BookingController {
 
       // Тестируем соединения для получения статистики
       const api1Test = await this.api1Service.testConnection();
+      const api2Test = await this.api2Service.testConnection();
       
       const stats = {
         totalRequests: 0, // TODO: добавить счетчик запросов
-        successRate: api1Test.status ? 100 : 0,
-        averageResponseTime: api1Test.responseTime,
+        successRate: (api1Test.status && api2Test.status) ? 100 : (api1Test.status || api2Test.status) ? 50 : 0,
+        averageResponseTime: Math.round((api1Test.responseTime + api2Test.responseTime) / 2),
         api1: {
           status: api1Test.status,
           lastCheck: new Date().toISOString(),
@@ -231,10 +232,10 @@ class BookingController {
           error: api1Test.error
         },
         api2: {
-          status: false,
+          status: api2Test.status,
           lastCheck: new Date().toISOString(),
-          responseTime: 0,
-          error: 'API 2 не настроен'
+          responseTime: api2Test.responseTime,
+          error: api2Test.error
         }
       };
 
