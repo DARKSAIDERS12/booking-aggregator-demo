@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 API Test - Booking Aggregator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: #3498db;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .test-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .test-btn.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .test-btn.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .test-btn.loading {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            cursor: not-allowed;
+        }
+
+        .results {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .result-item.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .result-item.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .result-item.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .result-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-data {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.success { background: #28a745; }
+        .status-indicator.error { background: #dc3545; }
+        .status-indicator.loading { background: #ffc107; }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .summary h3 {
+            margin-bottom: 15px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 API Test Dashboard</h1>
+            <p>Тестирование всех API endpoints Booking Aggregator</p>
+        </div>
+
+        <div class="nav">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Главная</a>
+                <a href="/dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="/station-management.html" class="nav-link">🚉 Управление станциями</a>
+                <a href="/race-search.html" class="nav-link">🔍 Поиск рейсов</a>
+                <a href="/api-test.html" class="nav-link">🧪 API Test</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="summary">
+                <h3>📊 Статистика тестирования</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalTests">0</div>
+                        <div class="stat-label">Всего тестов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="successTests">0</div>
+                        <div class="stat-label">Успешно</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="errorTests">0</div>
+                        <div class="stat-label">Ошибки</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="successRate">0%</div>
+                        <div class="stat-label">Успешность</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Тестирование станций -->
+            <div class="test-section">
+                <h2>🚉 Тестирование станций</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/stations', 'Получить все станции')">
+                        Все станции
+                    </button>
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/stations/from?from=Южно-Сахалинск', 'Станции назначения')">
+                        Станции назначения
+                    </button>
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/stations/mappings', 'Сопоставления станций')">
+                        Сопоставления
+                    </button>
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/stations/groups', 'Группы станций')">
+                        Группы станций
+                    </button>
+                </div>
+                <div class="results" id="stations-results"></div>
+            </div>
+
+            <!-- Тестирование рейсов -->
+            <div class="test-section">
+                <h2>🚌 Тестирование рейсов</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/races', 'Все рейсы')">
+                        Все рейсы
+                    </button>
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/races/search?from=Южно-Сахалинск&to=Холмск&date=2025-08-22', 'Поиск рейсов')">
+                        Поиск рейсов
+                    </button>
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/races/paybilet_1755855563704_1', 'Информация о рейсе')">
+                        Информация о рейсе
+                    </button>
+                </div>
+                <div class="results" id="races-results"></div>
+            </div>
+
+            <!-- Тестирование заказов -->
+            <div class="test-section">
+                <h2>📋 Тестирование заказов</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testEndpoint('GET', '/api/orders', 'Все заказы')">
+                        Все заказы
+                    </button>
+                    <button class="test-btn" onclick="testStrapiEndpoint('/api/orders', 'Регистрация заказа', {data: {order_number: 'TEST-' + Date.now(), customer_name: 'Иван Иванов', customer_phone: '+7-999-123-45-67', customer_email: 'ivan@test.ru', status: 'pending', total_amount: 1150, currency: 'RUB'}}, 'orders-results')">
+                        Регистрация заказа (Strapi)
+                    </button>
+                </div>
+                <div class="results" id="orders-results"></div>
+            </div>
+
+            <!-- Тестирование Strapi API -->
+            <div class="test-section">
+                <h2>🔧 Тестирование Strapi API</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testStrapiEndpoint('/api/api1-stations', 'API1 Станции')">
+                        API1 Станции
+                    </button>
+                    <button class="test-btn" onclick="testStrapiEndpoint('/api/api2-stations', 'API2 Станции')">
+                        API2 Станции
+                    </button>
+                    <button class="test-btn" onclick="testStrapiEndpoint('/api/station-mappings', 'Сопоставления')">
+                        Сопоставления
+                    </button>
+                    <button class="test-btn" onclick="testStrapiEndpoint('/api/station-groups', 'Группы')">
+                        Группы
+                    </button>
+                </div>
+                <div class="results" id="strapi-results"></div>
+            </div>
+
+            <!-- Тестирование создания групп -->
+            <div class="test-section">
+                <h2>🏗️ Тестирование создания групп</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="testCreateGroup('Холмск (все станции)', 'gds_2', ['pb_2'])">
+                        Создать группу Холмск
+                    </button>
+                    <button class="test-btn" onclick="testCreateGroup('Невельск (все станции)', 'gds_4', ['pb_4', 'pb_5'])">
+                        Создать группу Невельск
+                    </button>
+                    <button class="test-btn" onclick="testCreateGroup('Южно-Сахалинск (все станции)', 'gds_1', ['pb_1'])">
+                        Создать группу Южно-Сахалинск
+                    </button>
+                </div>
+                <div class="results" id="groups-results"></div>
+            </div>
+
+            <!-- Очистка результатов -->
+            <div class="test-section">
+                <h2>🧹 Управление</h2>
+                <div class="test-buttons">
+                    <button class="test-btn" onclick="clearAllResults()" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                        Очистить все результаты
+                    </button>
+                    <button class="test-btn" onclick="runAllTests()" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                        Запустить все тесты
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+        let totalTests = 0;
+        let successTests = 0;
+        let errorTests = 0;
+
+        // Обновление статистики
+        function updateStats() {
+            document.getElementById('totalTests').textContent = totalTests;
+            document.getElementById('successTests').textContent = successTests;
+            document.getElementById('errorTests').textContent = errorTests;
+            document.getElementById('successRate').textContent = totalTests > 0 ? Math.round((successTests / totalTests) * 100) + '%' : '0%';
+        }
+
+        // Тестирование основного API
+        async function testEndpoint(method, endpoint, description, data = null) {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = '⏳ Тестирование...';
+            button.className = 'test-btn loading';
+            button.disabled = true;
+
+            try {
+                const url = `http://localhost:3001${endpoint}`;
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (data && method === 'POST') {
+                    options.body = JSON.stringify(data);
+                }
+
+                const startTime = Date.now();
+                const response = await fetch(url, options);
+                const responseTime = Date.now() - startTime;
+                const responseData = await response.json();
+
+                totalTests++;
+                if (response.ok) {
+                    successTests++;
+                    addResult('success', `${description} ✅`, `Endpoint: ${endpoint}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nДанные: ${JSON.stringify(responseData, null, 2)}`);
+                } else {
+                    errorTests++;
+                    addResult('error', `${description} ❌`, `Endpoint: ${endpoint}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nОшибка: ${JSON.stringify(responseData, null, 2)}`);
+                }
+
+                button.className = response.ok ? 'test-btn success' : 'test-btn error';
+                button.textContent = response.ok ? '✅ Успешно' : '❌ Ошибка';
+
+            } catch (error) {
+                totalTests++;
+                errorTests++;
+                addResult('error', `${description} ❌`, `Endpoint: ${endpoint}\nОшибка: ${error.message}`);
+                button.className = 'test-btn error';
+                button.textContent = '❌ Ошибка';
+            }
+
+            updateStats();
+
+            // Сброс кнопки через 3 секунды
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.className = 'test-btn';
+                button.disabled = false;
+            }, 3000);
+        }
+
+        // Тестирование Strapi API
+        async function testStrapiEndpoint(endpoint, description, data = null, containerId = 'strapi-results') {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = '⏳ Тестирование...';
+            button.className = 'test-btn loading';
+            button.disabled = true;
+
+            try {
+                const url = `http://localhost:1337${endpoint}`;
+                const options = {
+                    method: data ? 'POST' : 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const startTime = Date.now();
+                const response = await fetch(url, options);
+                const responseTime = Date.now() - startTime;
+                const responseData = await response.json();
+
+                totalTests++;
+                if (response.ok) {
+                    successTests++;
+                    addResult('success', `${description} ✅`, `Endpoint: ${endpoint}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nДанные: ${JSON.stringify(responseData, null, 2)}`, containerId);
+                } else {
+                    errorTests++;
+                    addResult('error', `${description} ❌`, `Endpoint: ${endpoint}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nОшибка: ${JSON.stringify(responseData, null, 2)}`, containerId);
+                }
+
+                button.className = response.ok ? 'test-btn success' : 'test-btn error';
+                button.textContent = response.ok ? '✅ Успешно' : '❌ Ошибка';
+
+            } catch (error) {
+                totalTests++;
+                errorTests++;
+                addResult('error', `${description} ❌`, `Endpoint: ${endpoint}\nОшибка: ${error.message}`, containerId);
+                button.className = 'test-btn error';
+                button.textContent = '❌ Ошибка';
+            }
+
+            updateStats();
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.className = 'test-btn';
+                button.disabled = false;
+            }, 3000);
+        }
+
+        // Тестирование создания групп
+        async function testCreateGroup(name, mainStationId, childStations) {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = '⏳ Создание...';
+            button.className = 'test-btn loading';
+            button.disabled = true;
+
+            try {
+                // Сначала создаем группу в Strapi
+                const strapiUrl = 'http://localhost:1337/api/station-groups';
+                const strapiData = {
+                    data: {
+                        name: name,
+                        display_name: name
+                    }
+                };
+
+                const startTime = Date.now();
+                const response = await fetch(strapiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(strapiData)
+                });
+                const responseTime = Date.now() - startTime;
+                const responseData = await response.json();
+
+                totalTests++;
+                if (response.ok) {
+                    successTests++;
+                    addResult('success', `Группа "${name}" создана ✅`, `Данные: ${JSON.stringify(strapiData, null, 2)}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nРезультат: ${JSON.stringify(responseData, null, 2)}`, 'groups-results');
+                } else {
+                    errorTests++;
+                    addResult('error', `Группа "${name}" не создана ❌`, `Данные: ${JSON.stringify(strapiData, null, 2)}\nВремя ответа: ${responseTime}ms\nСтатус: ${response.status}\nОшибка: ${JSON.stringify(responseData, null, 2)}`, 'groups-results');
+                }
+
+                button.className = response.ok ? 'test-btn success' : 'test-btn error';
+                button.textContent = response.ok ? '✅ Создана' : '❌ Ошибка';
+
+            } catch (error) {
+                totalTests++;
+                errorTests++;
+                addResult('error', `Группа "${name}" не создана ❌`, `Ошибка: ${error.message}`, 'groups-results');
+                button.className = 'test-btn error';
+                button.textContent = '❌ Ошибка';
+            }
+
+            updateStats();
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.className = 'test-btn';
+                button.disabled = false;
+            }, 3000);
+        }
+
+        // Добавление результата
+        function addResult(type, title, data, containerId = null) {
+            const container = document.getElementById(containerId || 'stations-results');
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            resultItem.innerHTML = `
+                <div class="result-header">
+                    <span><span class="status-indicator ${type}"></span>${title}</span>
+                    <span style="font-size: 0.8em; opacity: 0.7;">${timestamp}</span>
+                </div>
+                <div class="result-data">${data}</div>
+            `;
+            
+            container.insertBefore(resultItem, container.firstChild);
+            
+            // Сохраняем результат для статистики
+            testResults.push({ type, title, data, timestamp });
+        }
+
+        // Очистка всех результатов
+        function clearAllResults() {
+            const containers = ['stations-results', 'races-results', 'orders-results', 'strapi-results', 'groups-results'];
+            containers.forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+            
+            testResults = [];
+            totalTests = 0;
+            successTests = 0;
+            errorTests = 0;
+            updateStats();
+        }
+
+        // Запуск всех тестов
+        async function runAllTests() {
+            const tests = [
+                () => testEndpoint('GET', '/api/stations', 'Все станции'),
+                () => testEndpoint('GET', '/api/stations/mappings', 'Сопоставления станций'),
+                () => testEndpoint('GET', '/api/races', 'Все рейсы'),
+                () => testStrapiEndpoint('POST', '/api/orders', 'Регистрация заказа', {data: {order_number: 'TEST-' + Date.now(), customer_name: 'Иван Иванов', customer_phone: '+7-999-123-45-67', customer_email: 'ivan@test.ru', status: 'pending', total_amount: 1150, currency: 'RUB'}}, 'orders-results'),
+                () => testStrapiEndpoint('/api/api1-stations', 'API1 Станции'),
+                () => testStrapiEndpoint('/api/api2-stations', 'API2 Станции')
+            ];
+
+            for (let i = 0; i < tests.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Пауза между тестами
+                tests[i]();
+            }
+        }
+
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            addResult('info', '🚀 API Test Dashboard загружен', 'Готов к тестированию всех API endpoints\n\nСервер: http://localhost:3001\nStrapi: http://localhost:1337');
+        });
+    </script>
+</body>
+</html>

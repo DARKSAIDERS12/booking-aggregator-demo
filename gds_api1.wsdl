@@ -1,0 +1,1515 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.gds.artmark.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="SoapServiceImplService" targetNamespace="http://service.gds.artmark.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.gds.artmark.com/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://service.gds.artmark.com/" version="1.0">
+  <xs:element name="bookOrder" type="tns:bookOrder"/>
+  <xs:element name="bookOrderResponse" type="tns:bookOrderResponse"/>
+  <xs:element name="cancelOrder" type="tns:cancelOrder"/>
+  <xs:element name="cancelOrderResponse" type="tns:cancelOrderResponse"/>
+  <xs:element name="cancelTicket" type="tns:cancelTicket"/>
+  <xs:element name="cancelTicketResponse" type="tns:cancelTicketResponse"/>
+  <xs:element name="confirmOrder" type="tns:confirmOrder"/>
+  <xs:element name="confirmOrderResponse" type="tns:confirmOrderResponse"/>
+  <xs:element name="echo" type="tns:echo"/>
+  <xs:element name="echoResponse" type="tns:echoResponse"/>
+  <xs:element name="getArrivalPoints" type="tns:getArrivalPoints"/>
+  <xs:element name="getArrivalPointsResponse" type="tns:getArrivalPointsResponse"/>
+  <xs:element name="getCarrier" type="tns:getCarrier"/>
+  <xs:element name="getCarrierResponse" type="tns:getCarrierResponse"/>
+  <xs:element name="getCountries" type="tns:getCountries"/>
+  <xs:element name="getCountriesResponse" type="tns:getCountriesResponse"/>
+  <xs:element name="getDepotInfo" type="tns:getDepotInfo"/>
+  <xs:element name="getDepotInfoResponse" type="tns:getDepotInfoResponse"/>
+  <xs:element name="getDepots" type="tns:getDepots"/>
+  <xs:element name="getDepotsResponse" type="tns:getDepotsResponse"/>
+  <xs:element name="getDispatchPoints" type="tns:getDispatchPoints"/>
+  <xs:element name="getDispatchPointsResponse" type="tns:getDispatchPointsResponse"/>
+  <xs:element name="getDocTypes" type="tns:getDocTypes"/>
+  <xs:element name="getDocTypesResponse" type="tns:getDocTypesResponse"/>
+  <xs:element name="getOrder" type="tns:getOrder"/>
+  <xs:element name="getOrderResponse" type="tns:getOrderResponse"/>
+  <xs:element name="getRace" type="tns:getRace"/>
+  <xs:element name="getRaceCarrier" type="tns:getRaceCarrier"/>
+  <xs:element name="getRaceCarrierResponse" type="tns:getRaceCarrierResponse"/>
+  <xs:element name="getRaceResponse" type="tns:getRaceResponse"/>
+  <xs:element name="getRaceSeats" type="tns:getRaceSeats"/>
+  <xs:element name="getRaceSeatsResponse" type="tns:getRaceSeatsResponse"/>
+  <xs:element name="getRaceStops" type="tns:getRaceStops"/>
+  <xs:element name="getRaceStopsResponse" type="tns:getRaceStopsResponse"/>
+  <xs:element name="getRaceSummary" type="tns:getRaceSummary"/>
+  <xs:element name="getRaceSummaryResponse" type="tns:getRaceSummaryResponse"/>
+  <xs:element name="getRaces" type="tns:getRaces"/>
+  <xs:element name="getRacesResponse" type="tns:getRacesResponse"/>
+  <xs:element name="getReference" type="tns:getReference"/>
+  <xs:element name="getReferenceResponse" type="tns:getReferenceResponse"/>
+  <xs:element name="getRegions" type="tns:getRegions"/>
+  <xs:element name="getRegionsResponse" type="tns:getRegionsResponse"/>
+  <xs:element name="getReturnInfo" type="tns:getReturnInfo"/>
+  <xs:element name="getReturnInfoResponse" type="tns:getReturnInfoResponse"/>
+  <xs:element name="getTicket" type="tns:getTicket"/>
+  <xs:element name="getTicketResponse" type="tns:getTicketResponse"/>
+  <xs:element name="getTicketTypes" type="tns:getTicketTypes"/>
+  <xs:element name="getTicketTypesResponse" type="tns:getTicketTypesResponse"/>
+  <xs:element name="getVersion" type="tns:getVersion"/>
+  <xs:element name="getVersionResponse" type="tns:getVersionResponse"/>
+  <xs:element name="returnTicket" type="tns:returnTicket"/>
+  <xs:element name="returnTicketResponse" type="tns:returnTicketResponse"/>
+  <xs:element name="updateTicket" type="tns:updateTicket"/>
+  <xs:element name="updateTicketResponse" type="tns:updateTicketResponse"/>
+  <xs:complexType name="getRaceCarrier">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceCarrierResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:carrier"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="carrier">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="addressActual" type="xs:string"/>
+      <xs:element minOccurs="0" name="addressLegal" type="xs:string"/>
+      <xs:element minOccurs="0" name="director" type="xs:string"/>
+      <xs:element minOccurs="0" name="email" type="xs:string"/>
+      <xs:element minOccurs="0" name="inn" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="ogrn" type="xs:string"/>
+      <xs:element minOccurs="0" name="phone" type="xs:string"/>
+      <xs:element minOccurs="0" name="site" type="xs:string"/>
+      <xs:element minOccurs="0" name="workMode" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getVersion">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="getVersionResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getArrivalPoints">
+    <xs:sequence>
+      <xs:element name="dispatchPointId" type="xs:long"/>
+      <xs:element minOccurs="0" name="pattern" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getArrivalPointsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:point"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="point">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="address" type="xs:string"/>
+          <xs:element minOccurs="0" name="details" type="xs:string"/>
+          <xs:element name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="latitude" type="xs:string"/>
+          <xs:element minOccurs="0" name="longitude" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="okato" type="xs:string"/>
+          <xs:element name="place" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="region" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="abstractEntity">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="getDepotInfo">
+    <xs:sequence>
+      <xs:element name="depotId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDepotInfoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:depotInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="depotInfo">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="address" type="xs:string"/>
+          <xs:element name="bookingTimeLimit" type="xs:int"/>
+          <xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="engine" type="xs:string"/>
+          <xs:element minOccurs="0" name="features" type="xs:string"/>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="info" type="xs:string"/>
+          <xs:element minOccurs="0" name="latitude" type="xs:string"/>
+          <xs:element minOccurs="0" name="longitude" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element name="online" type="xs:boolean"/>
+          <xs:element name="phoneRequired" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="phones" type="xs:string"/>
+          <xs:element minOccurs="0" name="printInfo" type="xs:string"/>
+          <xs:element minOccurs="0" name="returnInfo" type="xs:string"/>
+          <xs:element minOccurs="0" name="site" type="xs:string"/>
+          <xs:element name="ticketLimit" type="xs:int"/>
+          <xs:element minOccurs="0" name="timezone" type="xs:string"/>
+          <xs:element name="updatableTicket" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="version" type="xs:string"/>
+          <xs:element minOccurs="0" name="workingTime" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getDispatchPoints">
+    <xs:sequence>
+      <xs:element name="regionId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDispatchPointsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:point"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="bookOrder">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="sales" type="tns:sale"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="sale">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="lastName" type="xs:string"/>
+          <xs:element minOccurs="0" name="firstName" type="xs:string"/>
+          <xs:element minOccurs="0" name="middleName" type="xs:string"/>
+          <xs:element minOccurs="0" name="docTypeCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="docSeries" type="xs:string"/>
+          <xs:element minOccurs="0" name="docNum" type="xs:string"/>
+          <xs:element minOccurs="0" name="gender" type="xs:string"/>
+          <xs:element minOccurs="0" name="citizenship" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthday" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="phone" type="xs:string"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+          <xs:element minOccurs="0" name="seatCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketTypeCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="benefit" type="tns:benefit"/>
+          <xs:element minOccurs="0" name="info" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="benefit">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="address" type="xs:string"/>
+          <xs:element minOccurs="0" name="docNum" type="xs:string"/>
+          <xs:element minOccurs="0" name="docSeries" type="xs:string"/>
+          <xs:element minOccurs="0" name="school" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType abstract="true" name="persistentEntity">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="bookOrderResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:order"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="order">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="uid" type="xs:string"/>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="user" type="tns:user"/>
+          <xs:element minOccurs="0" name="agent" type="tns:company"/>
+          <xs:element minOccurs="0" name="reserveCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="total" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="paymentMethod" type="xs:string"/>
+          <xs:element minOccurs="0" name="repayment" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="status" type="xs:string"/>
+          <xs:element minOccurs="0" name="created" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="expired" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="finished" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="tickets" nillable="true" type="tns:ticket"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="user">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="username" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="company">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="fullName" type="xs:string"/>
+          <xs:element minOccurs="0" name="inn" type="xs:string"/>
+          <xs:element minOccurs="0" name="markup" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="extra" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ticket">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="uid" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketNum" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketSeries" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketClass" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketTypeCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="ticketType" type="xs:string"/>
+          <xs:element minOccurs="0" name="raceUid" type="xs:string"/>
+          <xs:element minOccurs="0" name="raceNum" type="xs:string"/>
+          <xs:element minOccurs="0" name="raceName" type="xs:string"/>
+          <xs:element minOccurs="0" name="raceClassId" type="xs:int"/>
+          <xs:element minOccurs="0" name="dispatchDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dispatchStation" type="xs:string"/>
+          <xs:element minOccurs="0" name="dispatchAddress" type="xs:string"/>
+          <xs:element minOccurs="0" name="arrivalDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="arrivalStation" type="xs:string"/>
+          <xs:element minOccurs="0" name="arrivalAddress" type="xs:string"/>
+          <xs:element minOccurs="0" name="seat" type="xs:string"/>
+          <xs:element minOccurs="0" name="seatCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="platform" type="xs:string"/>
+          <xs:element minOccurs="0" name="lastName" type="xs:string"/>
+          <xs:element minOccurs="0" name="firstName" type="xs:string"/>
+          <xs:element minOccurs="0" name="middleName" type="xs:string"/>
+          <xs:element minOccurs="0" name="docTypeCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="docType" type="xs:string"/>
+          <xs:element minOccurs="0" name="docSeries" type="xs:string"/>
+          <xs:element minOccurs="0" name="docNum" type="xs:string"/>
+          <xs:element minOccurs="0" name="citizenship" type="xs:string"/>
+          <xs:element minOccurs="0" name="gender" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthday" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="phone" type="xs:string"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+          <xs:element minOccurs="0" name="supplierCurrencyCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="supplierFare" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="supplierDues" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="supplierPrice" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="supplierRepayment" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="currencyCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="dues" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="vat" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="repayment" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="busInfo" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrier" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrierInn" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrierPhone" type="xs:string"/>
+          <xs:element minOccurs="0" name="barcode" type="xs:string"/>
+          <xs:element minOccurs="0" name="status" type="xs:string"/>
+          <xs:element minOccurs="0" name="returned" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="benefit" type="tns:benefit"/>
+          <xs:element minOccurs="0" name="hash" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="payments" nillable="true" type="tns:ticketPayment"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ticketPayment">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="type" type="tns:ticketPaymentType"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="amount" type="xs:decimal"/>
+      <xs:element name="taxRate" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="currency" type="xs:string"/>
+      <xs:element minOccurs="0" name="relation" type="tns:ticketPaymentRelation"/>
+      <xs:element minOccurs="0" name="supplierInfo" type="xs:string"/>
+      <xs:element minOccurs="0" name="supplierInn" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCountries">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="getCountriesResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:country"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="country">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="fullName" type="xs:string"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="confirmOrder">
+    <xs:sequence>
+      <xs:element name="orderId" type="xs:long"/>
+      <xs:element minOccurs="0" name="paymentMethod" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="options" type="tns:ticketOption"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ticketOption">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="due" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="fare" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="ticketCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="confirmOrderResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:order"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getOrder">
+    <xs:sequence>
+      <xs:element name="orderId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getOrderResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:order"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="returnTicket">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="returnTicketResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:ticket"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDocTypes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDocTypesResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:docType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="docType">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="benefitCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getTicket">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getTicketResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:ticket"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateTicket">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+      <xs:element minOccurs="0" name="sale" type="tns:sale"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateTicketResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:ticket"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRace">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:race"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="race">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="uid" type="xs:string"/>
+          <xs:element name="depotId" type="xs:long"/>
+          <xs:element minOccurs="0" name="num" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="description" type="xs:string"/>
+          <xs:element minOccurs="0" name="dispatchDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="arrivalDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dispatchStationName" type="xs:string"/>
+          <xs:element minOccurs="0" name="arrivalStationName" type="xs:string"/>
+          <xs:element minOccurs="0" name="dispatchPointId" type="xs:long"/>
+          <xs:element minOccurs="0" name="arrivalPointId" type="xs:long"/>
+          <xs:element minOccurs="0" name="supplierPrice" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+          <xs:element name="freeSeatCount" type="xs:int"/>
+          <xs:element minOccurs="0" name="freeSeatEstimation" type="xs:string"/>
+          <xs:element minOccurs="0" name="busInfo" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrier" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrierInn" type="xs:string"/>
+          <xs:element minOccurs="0" name="carrierPhone" type="xs:string"/>
+          <xs:element minOccurs="0" name="principal" type="xs:string"/>
+          <xs:element minOccurs="0" name="principalInn" type="xs:string"/>
+          <xs:element name="dataRequired" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="type" type="tns:raceType"/>
+          <xs:element minOccurs="0" name="clazz" type="tns:raceClass"/>
+          <xs:element minOccurs="0" name="status" type="tns:raceStatus"/>
+          <xs:element name="fromCache" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="raceType">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="raceClass">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="raceStatus">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="cancelTicket">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cancelTicketResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:ticket"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRegions">
+    <xs:sequence>
+      <xs:element name="countryId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRegionsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:region"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="region">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="cancelOrder">
+    <xs:sequence>
+      <xs:element name="orderId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cancelOrderResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:order"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="echo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="message" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="echoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDepots">
+    <xs:sequence>
+      <xs:element name="pointId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getDepotsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:depotInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceStops">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceStopsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:stop"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="stop">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="regionName" type="xs:string"/>
+          <xs:element minOccurs="0" name="arrivalDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dispatchDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="stopTime" type="xs:int"/>
+          <xs:element minOccurs="0" name="distance" type="xs:int"/>
+          <xs:element minOccurs="0" name="address" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getRaceSummary">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceSummaryResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:raceSummary"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="raceSummary">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="depot" type="tns:depotInfo"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="docTypes" nillable="true" type="tns:docType"/>
+          <xs:element minOccurs="0" name="race" type="tns:race"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="seats" nillable="true" type="tns:seat"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="stops" nillable="true" type="tns:stop"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="ticketTypes" nillable="true" type="tns:ticketType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="seat">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ticketType">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="ticketClass" type="xs:string"/>
+          <xs:element minOccurs="0" name="benefitCode" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getCarrier">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getCarrierResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:carrier"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceSeats">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRaceSeatsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:seat"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getReturnInfo">
+    <xs:sequence>
+      <xs:element name="ticketId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getReturnInfoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:returnInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="returnInfo">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="description" type="xs:string"/>
+          <xs:element minOccurs="0" name="returnFare" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="returnTotal" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getTicketTypes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="uid" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getTicketTypesResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:ticketType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getReference">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="code" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getReferenceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:reference"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="reference">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="items" nillable="true" type="tns:referenceItem"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="referenceItem">
+    <xs:complexContent>
+      <xs:extension base="tns:persistentEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="key" type="xs:string"/>
+          <xs:element minOccurs="0" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="getRaces">
+    <xs:sequence>
+      <xs:element name="dispatchPointId" type="xs:long"/>
+      <xs:element name="arrivalPointId" type="xs:long"/>
+      <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getRacesResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:race"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="ticketPaymentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FARE"/>
+      <xs:enumeration value="SUPPLIER_FEE"/>
+      <xs:enumeration value="AGENT_FEE"/>
+      <xs:enumeration value="DEDUCTION"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ticketPaymentRelation">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AGENT"/>
+      <xs:enumeration value="OWN"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ServiceException" type="tns:ServiceException"/>
+  <xs:complexType name="ServiceException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="type" type="xs:string"/>
+      <xs:element minOccurs="0" name="message" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getRaceCarrier">
+    <wsdl:part element="tns:getRaceCarrier" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnTicketResponse">
+    <wsdl:part element="tns:returnTicketResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceSeatsResponse">
+    <wsdl:part element="tns:getRaceSeatsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="bookOrder">
+    <wsdl:part element="tns:bookOrder" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCarrierResponse">
+    <wsdl:part element="tns:getCarrierResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRacesResponse">
+    <wsdl:part element="tns:getRacesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ServiceException">
+    <wsdl:part element="tns:ServiceException" name="ServiceException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="returnTicket">
+    <wsdl:part element="tns:returnTicket" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDepotInfoResponse">
+    <wsdl:part element="tns:getDepotInfoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateTicket">
+    <wsdl:part element="tns:updateTicket" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelTicket">
+    <wsdl:part element="tns:cancelTicket" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceStopsResponse">
+    <wsdl:part element="tns:getRaceStopsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getArrivalPointsResponse">
+    <wsdl:part element="tns:getArrivalPointsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceSummaryResponse">
+    <wsdl:part element="tns:getRaceSummaryResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelOrder">
+    <wsdl:part element="tns:cancelOrder" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceResponse">
+    <wsdl:part element="tns:getRaceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="echo">
+    <wsdl:part element="tns:echo" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getReferenceResponse">
+    <wsdl:part element="tns:getReferenceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceSummary">
+    <wsdl:part element="tns:getRaceSummary" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCountriesResponse">
+    <wsdl:part element="tns:getCountriesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCarrier">
+    <wsdl:part element="tns:getCarrier" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getReturnInfo">
+    <wsdl:part element="tns:getReturnInfo" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRegionsResponse">
+    <wsdl:part element="tns:getRegionsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="echoResponse">
+    <wsdl:part element="tns:echoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaces">
+    <wsdl:part element="tns:getRaces" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVersion">
+    <wsdl:part element="tns:getVersion" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getReturnInfoResponse">
+    <wsdl:part element="tns:getReturnInfoResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getArrivalPoints">
+    <wsdl:part element="tns:getArrivalPoints" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDepotInfo">
+    <wsdl:part element="tns:getDepotInfo" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDispatchPoints">
+    <wsdl:part element="tns:getDispatchPoints" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDepotsResponse">
+    <wsdl:part element="tns:getDepotsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCountries">
+    <wsdl:part element="tns:getCountries" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="confirmOrder">
+    <wsdl:part element="tns:confirmOrder" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrder">
+    <wsdl:part element="tns:getOrder" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelTicketResponse">
+    <wsdl:part element="tns:cancelTicketResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="confirmOrderResponse">
+    <wsdl:part element="tns:confirmOrderResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDocTypesResponse">
+    <wsdl:part element="tns:getDocTypesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDispatchPointsResponse">
+    <wsdl:part element="tns:getDispatchPointsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDocTypes">
+    <wsdl:part element="tns:getDocTypes" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTicket">
+    <wsdl:part element="tns:getTicket" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceCarrierResponse">
+    <wsdl:part element="tns:getRaceCarrierResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cancelOrderResponse">
+    <wsdl:part element="tns:cancelOrderResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRace">
+    <wsdl:part element="tns:getRace" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRegions">
+    <wsdl:part element="tns:getRegions" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="bookOrderResponse">
+    <wsdl:part element="tns:bookOrderResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTicketTypesResponse">
+    <wsdl:part element="tns:getTicketTypesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDepots">
+    <wsdl:part element="tns:getDepots" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTicketResponse">
+    <wsdl:part element="tns:getTicketResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVersionResponse">
+    <wsdl:part element="tns:getVersionResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateTicketResponse">
+    <wsdl:part element="tns:updateTicketResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceStops">
+    <wsdl:part element="tns:getRaceStops" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRaceSeats">
+    <wsdl:part element="tns:getRaceSeats" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrderResponse">
+    <wsdl:part element="tns:getOrderResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTicketTypes">
+    <wsdl:part element="tns:getTicketTypes" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getReference">
+    <wsdl:part element="tns:getReference" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapService">
+    <wsdl:operation name="getRaceCarrier">
+      <wsdl:input message="tns:getRaceCarrier" name="getRaceCarrier">
+    </wsdl:input>
+      <wsdl:output message="tns:getRaceCarrierResponse" name="getRaceCarrierResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getVersion">
+      <wsdl:input message="tns:getVersion" name="getVersion">
+    </wsdl:input>
+      <wsdl:output message="tns:getVersionResponse" name="getVersionResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArrivalPoints">
+      <wsdl:input message="tns:getArrivalPoints" name="getArrivalPoints">
+    </wsdl:input>
+      <wsdl:output message="tns:getArrivalPointsResponse" name="getArrivalPointsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDepotInfo">
+      <wsdl:input message="tns:getDepotInfo" name="getDepotInfo">
+    </wsdl:input>
+      <wsdl:output message="tns:getDepotInfoResponse" name="getDepotInfoResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getDispatchPoints">
+      <wsdl:input message="tns:getDispatchPoints" name="getDispatchPoints">
+    </wsdl:input>
+      <wsdl:output message="tns:getDispatchPointsResponse" name="getDispatchPointsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="bookOrder">
+      <wsdl:input message="tns:bookOrder" name="bookOrder">
+    </wsdl:input>
+      <wsdl:output message="tns:bookOrderResponse" name="bookOrderResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCountries">
+      <wsdl:input message="tns:getCountries" name="getCountries">
+    </wsdl:input>
+      <wsdl:output message="tns:getCountriesResponse" name="getCountriesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="confirmOrder">
+      <wsdl:input message="tns:confirmOrder" name="confirmOrder">
+    </wsdl:input>
+      <wsdl:output message="tns:confirmOrderResponse" name="confirmOrderResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOrder">
+      <wsdl:input message="tns:getOrder" name="getOrder">
+    </wsdl:input>
+      <wsdl:output message="tns:getOrderResponse" name="getOrderResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="returnTicket">
+      <wsdl:input message="tns:returnTicket" name="returnTicket">
+    </wsdl:input>
+      <wsdl:output message="tns:returnTicketResponse" name="returnTicketResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getDocTypes">
+      <wsdl:input message="tns:getDocTypes" name="getDocTypes">
+    </wsdl:input>
+      <wsdl:output message="tns:getDocTypesResponse" name="getDocTypesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTicket">
+      <wsdl:input message="tns:getTicket" name="getTicket">
+    </wsdl:input>
+      <wsdl:output message="tns:getTicketResponse" name="getTicketResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateTicket">
+      <wsdl:input message="tns:updateTicket" name="updateTicket">
+    </wsdl:input>
+      <wsdl:output message="tns:updateTicketResponse" name="updateTicketResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRace">
+      <wsdl:input message="tns:getRace" name="getRace">
+    </wsdl:input>
+      <wsdl:output message="tns:getRaceResponse" name="getRaceResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cancelTicket">
+      <wsdl:input message="tns:cancelTicket" name="cancelTicket">
+    </wsdl:input>
+      <wsdl:output message="tns:cancelTicketResponse" name="cancelTicketResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRegions">
+      <wsdl:input message="tns:getRegions" name="getRegions">
+    </wsdl:input>
+      <wsdl:output message="tns:getRegionsResponse" name="getRegionsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelOrder">
+      <wsdl:input message="tns:cancelOrder" name="cancelOrder">
+    </wsdl:input>
+      <wsdl:output message="tns:cancelOrderResponse" name="cancelOrderResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="echo">
+      <wsdl:input message="tns:echo" name="echo">
+    </wsdl:input>
+      <wsdl:output message="tns:echoResponse" name="echoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDepots">
+      <wsdl:input message="tns:getDepots" name="getDepots">
+    </wsdl:input>
+      <wsdl:output message="tns:getDepotsResponse" name="getDepotsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceStops">
+      <wsdl:input message="tns:getRaceStops" name="getRaceStops">
+    </wsdl:input>
+      <wsdl:output message="tns:getRaceStopsResponse" name="getRaceStopsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceSummary">
+      <wsdl:input message="tns:getRaceSummary" name="getRaceSummary">
+    </wsdl:input>
+      <wsdl:output message="tns:getRaceSummaryResponse" name="getRaceSummaryResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCarrier">
+      <wsdl:input message="tns:getCarrier" name="getCarrier">
+    </wsdl:input>
+      <wsdl:output message="tns:getCarrierResponse" name="getCarrierResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceSeats">
+      <wsdl:input message="tns:getRaceSeats" name="getRaceSeats">
+    </wsdl:input>
+      <wsdl:output message="tns:getRaceSeatsResponse" name="getRaceSeatsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getReturnInfo">
+      <wsdl:input message="tns:getReturnInfo" name="getReturnInfo">
+    </wsdl:input>
+      <wsdl:output message="tns:getReturnInfoResponse" name="getReturnInfoResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTicketTypes">
+      <wsdl:input message="tns:getTicketTypes" name="getTicketTypes">
+    </wsdl:input>
+      <wsdl:output message="tns:getTicketTypesResponse" name="getTicketTypesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getReference">
+      <wsdl:input message="tns:getReference" name="getReference">
+    </wsdl:input>
+      <wsdl:output message="tns:getReferenceResponse" name="getReferenceResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaces">
+      <wsdl:input message="tns:getRaces" name="getRaces">
+    </wsdl:input>
+      <wsdl:output message="tns:getRacesResponse" name="getRacesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ServiceException" name="ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SoapServiceImplServiceSoapBinding" type="tns:SoapService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getRaceCarrier">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRaceCarrier">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRaceCarrierResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getVersion">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getVersion">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getVersionResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArrivalPoints">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getArrivalPoints">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getArrivalPointsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDispatchPoints">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDispatchPoints">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDispatchPointsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDepotInfo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDepotInfo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDepotInfoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="bookOrder">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="bookOrder">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="bookOrderResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCountries">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getCountries">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCountriesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="confirmOrder">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="confirmOrder">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="confirmOrderResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOrder">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getOrder">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getOrderResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="returnTicket">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="returnTicket">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="returnTicketResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getDocTypes">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDocTypes">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDocTypesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTicket">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getTicket">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTicketResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateTicket">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="updateTicket">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateTicketResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRace">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRace">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRaceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cancelTicket">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cancelTicket">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelTicketResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRegions">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRegions">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRegionsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelOrder">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cancelOrder">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cancelOrderResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="echo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="echoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDepots">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDepots">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDepotsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceStops">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRaceStops">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRaceStopsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceSummary">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRaceSummary">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRaceSummaryResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCarrier">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getCarrier">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCarrierResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaceSeats">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRaceSeats">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRaceSeatsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getReturnInfo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getReturnInfo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getReturnInfoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTicketTypes">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getTicketTypes">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getTicketTypesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getReference">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getReference">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getReferenceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRaces">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRaces">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRacesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <soap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapServiceImplService">
+    <wsdl:port binding="tns:SoapServiceImplServiceSoapBinding" name="SoapServiceImplPort">
+      <soap:address location="https://cluster.avtovokzal.ru/gdstest/soap/sales"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎫 Заказ билета - Booking Aggregator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .route-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .route-info h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .route-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .detail-value {
+            color: #333;
+        }
+
+        .passenger-form {
+            margin-top: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 Заказ билета</h1>
+            <p>Функция бронирования будет реализована в следующем этапе разработки</p>
+        </div>
+
+        <div class="booking-card">
+            <div class="route-info">
+                <h3>🚌 Информация о рейсе</h3>
+                <div class="route-details" id="route-details">
+                    <!-- Данные о рейсе будут загружены из localStorage -->
+                </div>
+            </div>
+
+            <div class="passenger-form">
+                <h3>👤 Данные пассажира</h3>
+                
+                <div class="form-group">
+                    <label for="lastName">Фамилия *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="firstName">Имя *</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="middleName">Отчество</label>
+                    <input type="text" id="middleName" name="middleName">
+                </div>
+
+                <div class="form-group">
+                    <label for="passport">Серия и номер паспорта *</label>
+                    <input type="text" id="passport" name="passport" placeholder="0000 000000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com">
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-primary" onclick="goToBooking()">🎫 Забронировать билет</button>
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">← Назад</button>
+                </div>
+            </div>
+
+            <!-- Убираем уведомление о разработке, так как функция теперь работает -->
+        </div>
+
+        <div style="text-align: center;">
+            <a href="/" class="back-link">← Вернуться на главную</a>
+        </div>
+    </div>
+
+    <script>
+        // Загружаем информацию о выбранном рейсе
+        function loadRouteInfo() {
+            const selectedRoute = localStorage.getItem('selectedRoute');
+            
+            if (!selectedRoute) {
+                alert('Рейс не выбран! Вернитесь на главную страницу.');
+                window.location.href = '/';
+                return;
+            }
+
+            const route = JSON.parse(selectedRoute);
+            
+            // Отображаем информацию о рейсе
+            document.getElementById('route-details').innerHTML = `
+                <div class="detail-item">
+                    <span class="detail-label">Маршрут:</span>
+                    <span class="detail-value">${route.from} → ${route.to}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Время отправления:</span>
+                    <span class="detail-value">${formatDateTime(route.departureTime)}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Перевозчик:</span>
+                    <span class="detail-value">${route.carrier}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Стоимость:</span>
+                    <span class="detail-value">${route.price} руб</span>
+                </div>
+            `;
+        }
+
+        // Форматирование даты и времени
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleString('ru-RU', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Функция возврата назад
+        function goBack() {
+            window.history.back();
+        }
+
+        // Функция перенаправления на страницу бронирования и оплаты
+        function goToBooking() {
+            // Перенаправляем на страницу бронирования и оплаты
+            window.location.href = '/booking-payment.html';
+        }
+
+        // Загружаем информацию о рейсе при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRouteInfo();
+        });
+    </script>
+</body>
+</html>
