@@ -244,7 +244,9 @@ export class RaceService {
     private async getMappedStations(stationName: string): Promise<any[]> {
         try {
             // Ищем станцию в сопоставлениях
-            const mappings = await this.strapiService.getStationMappings();
+            const mappingsResponse = await this.strapiService.getStationMappings();
+            const mappings = mappingsResponse?.data || mappingsResponse || [];
+            if (!Array.isArray(mappings)) { console.warn("⚠️ mappings не является массивом:", typeof mappings, mappings); return []; }
             
             const mappedStations = mappings.filter(mapping => {
                 const api1Station = mapping.api1_station;
