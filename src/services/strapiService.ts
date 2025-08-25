@@ -103,7 +103,7 @@ export default class StrapiService {
 
   async getStationMappings(): Promise<any[]> {
     try {
-      const response = await this.makeRequest('GET', '/test3s');
+      const response = await this.makeRequest('GET', '/station-mappings');
       return response.data || [];
     } catch (error) {
       console.error('Ошибка получения сопоставлений станций:', error);
@@ -126,7 +126,7 @@ export default class StrapiService {
     try {
       // Убираем поле id, так как Strapi сам его генерирует
       const { id, ...dataWithoutId } = mappingData;
-      const response = await this.makeRequest('POST', '/test3s', { data: dataWithoutId });
+      const response = await this.makeRequest('POST', '/station-mappings', { data: dataWithoutId });
       return response.data;
     } catch (error) {
       console.error('Ошибка создания сопоставления станций:', error);
