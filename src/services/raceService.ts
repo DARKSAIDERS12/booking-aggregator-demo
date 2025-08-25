@@ -245,7 +245,7 @@ export class RaceService {
         try {
             // Ищем станцию в сопоставлениях
             const mappingsResponse = await this.strapiService.getStationMappings();
-            const mappings = mappingsResponse?.data || mappingsResponse || [];
+            const mappings = (mappingsResponse as any)?.data || mappingsResponse || [];
             if (!Array.isArray(mappings)) { console.warn("⚠️ mappings не является массивом:", typeof mappings, mappings); return []; }
             
             const mappedStations = mappings.filter(mapping => {
