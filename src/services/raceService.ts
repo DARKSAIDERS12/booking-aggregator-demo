@@ -181,13 +181,35 @@ export class RaceService {
     private async searchApi2Races(params: RaceSearchParams, fromStations: any[], toStations: any[]): Promise<Race[]> {
         const races: Race[] = [];
 
-        for (const fromStation of fromStations) {
-            for (const toStation of toStations) {
+        // Нормализуем дату для API2 (ожидает dd.MM.yyyy)
+        const formatDateForApi2 = (dateStr: string): string => {
+            if (!dateStr) return dateStr;
+            // Уже dd.MM.yyyy
+            if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) return dateStr;
+            // Пробуем YYYY-MM-DD или YYYY/MM/DD
+            const m = dateStr.match(/^(\d{4})[-\/.](\d{2})[-\/.](\d{2})$/);
+            if (m) {
+                const [, y, mo, d] = m;
+                return `${d}.${mo}.${y}`;
+            }
+            // Иначе оставляем как есть
+            return dateStr;
+        };
+
+        const normalizedDate = formatDateForApi2(params.date);
+
+        // Оставляем только станции API2 (у них station_id числовой)
+        const isApi2Id = (id: any) => typeof id === 'string' && /^\d+$/.test(id);
+        const fromApi2 = fromStations.filter(s => isApi2Id(s.station_id));
+        const toApi2 = toStations.filter(s => isApi2Id(s.station_id));
+
+        for (const fromStation of fromApi2) {
+            for (const toStation of toApi2) {
                 try {
                     const api2Races = await this.api2Service.searchRaces({
                         from: fromStation.station_id,
                         to: toStation.station_id,
-                        date: params.date
+                        date: normalizedDate
                     });
 
                     races.push(...api2Races.map(race => ({
@@ -265,8 +287,21 @@ export class RaceService {
             }
 
             // Если сопоставлений нет, ищем по названию
-            const api1Stations = await this.strapiService.getApi1Stations();
-            const api2Stations = await this.strapiService.getApi2Stations();
+            const api1StationsResponse = await this.strapiService.getApi1Stations();
+            const api2StationsResponse = await this.strapiService.getApi2Stations();
+            
+            const api1Stations = (api1StationsResponse as any)?.data || api1StationsResponse || [];
+            const api2Stations = (api2StationsResponse as any)?.data || api2StationsResponse || [];
+            
+            if (!Array.isArray(api1Stations)) {
+                console.warn("⚠️ api1Stations не является массивом:", typeof api1Stations, api1Stations);
+                return [];
+            }
+            
+            if (!Array.isArray(api2Stations)) {
+                console.warn("⚠️ api2Stations не является массивом:", typeof api2Stations, api2Stations);
+                return [];
+            }
 
             const foundStations = [
                 ...api1Stations.filter(s => s.name.toLowerCase().includes(stationName.toLowerCase())),

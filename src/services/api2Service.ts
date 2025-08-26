@@ -38,12 +38,19 @@ export class Api2Service {
         timeout: 10000
       });
 
-      if (response.data && response.data.success) {
-        console.log(`✅ Найдено ${response.data.data?.length || 0} рейсов в Paybilet API`);
-        return response.data.data || [];
+      const payload = response.data;
+      // Поддерживаем оба формата: массив напрямую или { success, data }
+      if (Array.isArray(payload)) {
+        console.log(`✅ Найдено ${payload.length} рейсов в Paybilet API`);
+        return payload;
+      }
+      if (payload && payload.success) {
+        const arr = payload.data || [];
+        console.log(`✅ Найдено ${arr.length} рейсов в Paybilet API`);
+        return arr;
       }
 
-      console.log('⚠️ Paybilet API вернул пустой ответ');
+      console.log('⚠️ Paybilet API вернул пустой/неожиданный ответ');
       return [];
       
     } catch (error: any) {

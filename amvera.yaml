@@ -1,0 +1,35 @@
+name: booking-aggregator
+runtime: nodejs18
+
+build:
+  commands:
+    - npm ci
+    - npm run build
+
+start:
+  command: node dist/index.js
+
+network:
+  ports:
+    - name: http
+      port: ${PORT}
+      public: true
+
+# Рекомендуется задать переменные окружения в UI Amvera (без коммита секретов)
+# Ниже перечень, который нужно создать в настройках приложения:
+# env:
+#   - name: NODE_ENV
+#     value: production
+#   - name: STRAPI_URL
+#     value: https://<YOUR-STRAPI-HOST>
+#   - name: API1_BASE_URL
+#     value: https://cluster.avtovokzal.ru/gdstest
+#   - name: API1_USERNAME
+#     value: sakhbus
+#   - name: API1_PASSWORD
+#     value: Zxvghh4567!
+#   - name: API2_BASE_URL
+#     value: http://vl.rfbus.net:8086
+#   - name: API2_API_KEY
+#     value: <YOUR_API2_TOKEN>
+
